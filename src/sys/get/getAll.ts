@@ -1,4 +1,6 @@
 import { notifyAndClose } from "../../helpers";
+import { getInformation } from "./getInformation";
+import { getProperties } from "./getProperties";
 
 // Get all required from component
 export function getAll(selectedItems: any[], toDocument: any[]) {
@@ -11,10 +13,16 @@ export function getAll(selectedItems: any[], toDocument: any[]) {
         // Is the selected item a component?
         if (i.type === 'COMPONENT' || i.type === 'COMPONENT_SET') {
 
+            // Set up component object for info to be stored in
             component = {};
 
-            component.name = i.name;
-            component.type = i.type;
+            // Define information to store in component
+            component.info  = getInformation(i);
+            component.props = getProperties(i);
+            
+            // Check component
+            console.log(component);
+            
 
         }
 

@@ -4,9 +4,12 @@ import { arrayCheck, handleError, notifyAndClose } from "./helpers";
 
 import { run } from "./sys/run";
 import { fonts } from "./data/fonts";
+import { test } from "./sys/test";
 
 // Get the user current selection
 const selection: any = figma.currentPage.selection;
+
+// test();
 
 // Check if the user has selected anything and that if what they selected is a component
 if (arrayCheck(selection)) {

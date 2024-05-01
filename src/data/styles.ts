@@ -1,27 +1,72 @@
-// Import
-import { convertColour } from "../helpers";
+// Colours
+const n10   = figma.util.rgb('#000012');
+const n30   = figma.util.rgb('#555561');
+const n40   = figma.util.rgb('#808088');
+const n60   = figma.util.rgb('#CCCCD0');
+const n90   = figma.util.rgb('#EEEEEF');
+const n100  = figma.util.rgb('#F5F5F6');
+const n0    = figma.util.rgb('#FFFFFF');
+const p     = figma.util.rgb('#001D3D');
+const l     = figma.util.rgb('#FAF4F2');
+const s1    = figma.util.rgb('#C9EDFF');
+const s2    = figma.util.rgb('#184256');
+const t1    = figma.util.rgb('#CAFFDB');
+const t2    = figma.util.rgb('#05521E');
+
+const colours = {
+
+    neutral: {
+
+        1: n10,
+        2: n30,
+        3: n40,
+        4: n60,
+        5: n90,
+        6: n100
+
+    },
+    text: {
+
+        dark: n10,
+        primary: p,
+        secondary: s2,
+        tertiary: t2
+
+    },
+    bg: {
+
+        white: n0,
+        light: l,
+        subtle: n100,
+        secondary: s1,
+        tertiary: t1
+
+    }
+
+}
 
 // Fill
-const fillWhite         = { key: 'fills', value:[{ type: 'SOLID', color: convertColour('FFFFFF') }]};
-const fillOrange        = { key: 'fills', value:[{ type: 'SOLID', color: convertColour('FFEEDA') }]};
-const fillBlue          = { key: 'fills', value:[{ type: 'SOLID', color: convertColour('DAEDFF') }]};
-const fillRed           = { key: 'fills', value:[{ type: 'SOLID', color: convertColour('FFC7C7') }]};
-const fillRedDark       = { key: 'fills', value:[{ type: 'SOLID', color: convertColour('910000') }]};
-const fillPurple        = { key: 'fills', value:[{ type: 'SOLID', color: convertColour('622BA9') }]};
-const fillBlack         = { key: 'fills', value:[{ type: 'SOLID', color: convertColour('000000') }]};
-const fillDarkGrey      = { key: 'fills', value:[{ type: 'SOLID', color: convertColour('232323') }]};
-const fillGrey          = { key: 'fills', value:[{ type: 'SOLID', color: convertColour('222222') }]};
-const fillSubtle        = { key: 'fills', value:[{ type: 'SOLID', color: convertColour('BBBBBB') }]};
-const fillLightGrey     = { key: 'fills', value:[{ type: 'SOLID', color: convertColour('EBEBEB') }]};
-const fillLink          = { key: 'fills', value:[{ type: 'SOLID', color: convertColour('0000C9') }]};
+const fillWhite         = { key: 'fills', value:[{ type: 'SOLID', color: colours.bg.white }]};
+const fillRedDark       = { key: 'fills', value:[{ type: 'SOLID', color: figma.util.rgb('910000') }]};
+const fillBlack         = { key: 'fills', value:[{ type: 'SOLID', color: figma.util.rgb('000000') }]};
+const fillGrey          = { key: 'fills', value:[{ type: 'SOLID', color: figma.util.rgb('222222') }]};
+const fillSubtle        = { key: 'fills', value:[{ type: 'SOLID', color: figma.util.rgb('BBBBBB') }]};
+const fillLightGrey     = { key: 'fills', value:[{ type: 'SOLID', color: figma.util.rgb('EBEBEB') }]};
+const fillLink          = { key: 'fills', value:[{ type: 'SOLID', color: figma.util.rgb('0000C9') }]};
 const fillNone          = { key: 'fills', value:[]};
 
+const fillOrange        = { key: 'fills', value:[{ type: 'SOLID', color: figma.util.rgb('FFEEDA') }]};
+const fillBlue          = { key: 'fills', value:[{ type: 'SOLID', color: figma.util.rgb('DAEDFF') }]};
+const fillRed           = { key: 'fills', value:[{ type: 'SOLID', color: figma.util.rgb('FFC7C7') }]};
+const fillPurple        = { key: 'fills', value:[{ type: 'SOLID', color: figma.util.rgb('622BA9') }]};
+const fillDarkGrey      = { key: 'fills', value:[{ type: 'SOLID', color: figma.util.rgb('232323') }]};
+
 // Stroke
-const strokePurple      = { key: 'strokes', value:[{ type: 'SOLID', color: convertColour('622BA9') }]};
-const strokeBlack       = { key: 'strokes', value:[{ type: 'SOLID', color: convertColour('000000') }]};
-const strokeLight       = { key: 'strokes', value:[{ type: 'SOLID', color: convertColour('EBEBEB') }]};
-const strokeWhite       = { key: 'strokes', value:[{ type: 'SOLID', color: convertColour('FFFFFF') }]};
-const strokeRedDark     = { key: 'strokes', value:[{ type: 'SOLID', color: convertColour('910000') }]};
+const strokePurple      = { key: 'strokes', value:[{ type: 'SOLID', color: figma.util.rgb('622BA9') }]};
+const strokeBlack       = { key: 'strokes', value:[{ type: 'SOLID', color: figma.util.rgb('000000') }]};
+const strokeLight       = { key: 'strokes', value:[{ type: 'SOLID', color: figma.util.rgb('EBEBEB') }]};
+const strokeWhite       = { key: 'strokes', value:[{ type: 'SOLID', color: figma.util.rgb('FFFFFF') }]};
+const strokeRedDark     = { key: 'strokes', value:[{ type: 'SOLID', color: figma.util.rgb('910000') }]};
 const strokeNone        = { key: 'strokes', value: [] };
 const strokeDashed      = { key: 'dashPattern', value: [10,5] };
 const strokeSolid       = { key: 'dashPattern', value: [] };
