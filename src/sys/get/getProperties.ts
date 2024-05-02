@@ -7,6 +7,8 @@ export function getProperties(component: any) {
     let props:  any = component.componentPropertyDefinitions;
     let result: any = [];
 
+    console.log(props);
+
     // Check if component has properties and then loop thru them
     for (const key in props) {
 
