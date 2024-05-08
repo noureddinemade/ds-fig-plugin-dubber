@@ -1,11 +1,11 @@
-import { sortArray } from "../../helpers";
+import { cleanName, sortArray } from "../../helpers";
 
 // Get properties for component
 export function getProperties(component: any) {
 
     // Set up
     let props:  any = component.componentPropertyDefinitions;
-    let result: any = [];
+    let result: any = { variant: [], instance: [], text: [], boolean: [] };
 
     console.log(props);
 
@@ -14,17 +14,24 @@ export function getProperties(component: any) {
 
         if (props.hasOwnProperty(key)) {
 
-            let property: any   = {};
-                property.title  = key;
-                property.type   = props[key].type;
+            let k: any      = props[key];
+            let p: any      = {};
+                p.name      = cleanName(key);
+                p.type      = k.type;
+                p.default   = k.defaultValue;
+                p.options   = p.type === 'VARIANT' ? k.variantOptions : null;
+                p.preferred = p.type === 'INSTANCE_SWAP' ? k.preferredValues : null;
             
-            result.push(property);
+            if (p.type === 'VARIANT')           { result.variant.push(p)    };
+            if (p.type === 'INSTANCE_SWAP')     { result.instance.push(p)   };
+            if (p.type === 'TEXT')              { result.text.push(p)       };
+            if (p.type === 'BOOLEAN')           { result.boolean.push(p)    };
+            
 
         }
     }
 
     // Clean and return
-    sortArray(result, 'type');
     return result ? result : null;
 
 }

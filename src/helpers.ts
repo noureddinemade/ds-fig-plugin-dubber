@@ -111,3 +111,14 @@ export function convertColour(value: any) {
     return result;
 
 }
+
+// Clean name
+export function cleanName(string: string) {
+
+    // Set up
+    let result: any = string;
+
+    // Return
+    return string;
+
+}
