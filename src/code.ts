@@ -9,7 +9,7 @@ import { test } from "./sys/test";
 // Get the user current selection
 const selection: any = figma.currentPage.selection;
 
-// test();
+// test(selection[0]);
 
 // Check if the user has selected anything and that if what they selected is a component
 if (arrayCheck(selection)) {

@@ -113,12 +113,38 @@ export function convertColour(value: any) {
 }
 
 // Clean name
-export function cleanName(string: string) {
+export function cleanName(string: string, type: string | null = null) {
 
     // Set up
     let result: any = string;
 
+    // Clean up
+
+    // Remove # if it's a prop title
+    if (type === 'prop' && string.includes('#')) {
+
+        result = string.split('#');
+        result = result[0];
+
+    };
+
     // Return
-    return string;
+    return result;
+
+}
+
+// Clean type
+export function cleanType(name: string, prop: any) {
+
+    // Set up
+    let result: any = prop.type;
+        result      = result.toLowerCase();
+        result      = result.charAt(0);
+    
+    // If variant boolean hybrid
+    if (result === 'v' && name.includes('?')) { result = 'b' };
+
+    // Return
+    return result;
 
 }

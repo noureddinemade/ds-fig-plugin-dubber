@@ -1,9 +1,15 @@
 import { notifyAndClose } from "../helpers";
 
-export function test() {
+export async function test(item: any) {
 
-    const test = '';
-    console.log(test);
+    try {
+
+        let test: any   = null;
+            test        = await figma.getNodeByIdAsync(item.id);
+
+        console.log(test);
+        
+    } catch (error) {}
 
     //
     notifyAndClose('tested');
