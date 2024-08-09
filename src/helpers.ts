@@ -148,3 +148,40 @@ export function cleanType(name: string, prop: any) {
     return result;
 
 }
+
+// Create element
+export function create(name: string, props: any, type: any, text: any = null) {
+
+    // Setup response
+    let response: any | null;
+
+    // Create based on type
+    if (type === 'frame')   { response = figma.createFrame();       };
+    if (type === 'text')    { response = figma.createText();        };
+    if (type === 'vector')  { response = figma.createVector();      };
+    if (type === 'circle')  { response = figma.createEllipse();     };
+    if (type === 'rect')    { response = figma.createRectangle();   };
+
+    // Assign name
+    response.name = name;
+
+    // Check if there are any props and then loop thru them and assign them to the frame
+    if (arrayCheck(props)) {
+
+        props.forEach((p: any) => {
+
+            if (arrayCheck(p)) { p.forEach((i: { key: string | number; value: any; }) => response[i.key] = i.value ) }
+            else { response[p.key] = p.value }
+
+        })
+
+    }
+
+    // Add text if needed
+    if (type === 'text' && text) { response.characters = text };
+
+    // Return frame
+    if (type === 'frame') { response.expanded = false };
+    return response;
+
+}

@@ -1,4 +1,5 @@
 import { notifyAndClose } from "../../helpers";
+import { getAnatomy } from "./getAnatomy";
 import { getInformation } from "./getInformation";
 import { getProperties } from "./getProperties";
 
@@ -17,8 +18,9 @@ export function getAll(selectedItems: any[], toDocument: any[]) {
             component = {};
 
             // Define information to store in component
-            component.info  = getInformation(i);
-            component.props = getProperties(i);
+            component.info      = getInformation(i);
+            component.props     = getProperties(i);
+            component.anatomy   = getAnatomy(i, component.props);
             
             // Check component
             console.log(component);

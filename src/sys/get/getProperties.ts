@@ -14,6 +14,7 @@ export function getProperties(component: any) {
 
             let k: any      = props[key];
             let p: any      = {};
+                p.nameSet   = key;
                 p.name      = cleanName(key, 'prop');
                 p.type      = cleanType(key, k);
                 p.default   = p.type === 'b' ? Boolean(p.default) : k.defaultValue;
