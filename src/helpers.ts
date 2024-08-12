@@ -82,6 +82,13 @@ export function sortArray(array: any, key: any, reverse: any | null = null) {
 
 }
 
+// Check if an item is an object
+export function isObject(value: any): boolean {
+    
+    return value !== null && typeof value === 'object' && !Array.isArray(value);
+
+}
+
 // Convert colour from RGB to HEX and vice verca
 export function convertColour(value: any) {
 
@@ -121,10 +128,15 @@ export function cleanName(string: string, type: string | null = null) {
     // Clean up
 
     // Remove # if it's a prop title
-    if (type === 'prop' && string.includes('#')) {
+    if (type === 'prop') {
 
-        result = string.split('#');
-        result = result[0];
+        // Does it include a #?
+        if (string.includes('#')) {
+
+            result = result.split('#');
+            result = result[0];
+
+        }
 
     };
 
@@ -183,5 +195,43 @@ export function create(name: string, props: any, type: any, text: any = null) {
     // Return frame
     if (type === 'frame') { response.expanded = false };
     return response;
+
+}
+
+// Check naming convention
+export function namingCheck(name: string, type: any) {
+
+    // Set up
+    let error: any = null; 
+
+    // Check if name is not in lowercase
+    if (name !== name.toLowerCase()) {
+
+        error = `❌ The property "${name}" is not in lowercase which is againt our component naming pattern. 
+            Please correct the name first before running the plugin again.
+            You can do this by making the name all lowercase.`;
+
+    }
+
+    // Check name for spaces
+    if (name.includes(' ')) {
+
+        error = `❌ The property "${name}" contains a space in the name which is againt our component naming pattern. 
+            Please correct the name first before running the plugin again.
+            You can do this by replacing all spaces with dashes (-).`;
+
+    }
+
+    // Check if it's a boolean without a question mark
+    if (type === 'b' && !name.includes('?')) {
+
+        error = `❌ The property "${name}" is a boolean and does not include a question mark at the end. 
+            Please correct the name first before running the plugin again.
+            You can do this by adding a question mark (?) at the end of the name.`;
+
+    }
+
+    // Throw error if needed
+    if (error) { throw new Error(error) }
 
 }

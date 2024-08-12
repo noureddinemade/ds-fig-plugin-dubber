@@ -4,10 +4,7 @@ export async function test(item: any) {
 
     try {
 
-        let test: any   = null;
-            test        = await figma.getNodeByIdAsync(item.id);
-
-        console.log(test);
+        console.log(item.componentPropertyDefinitions);
         
     } catch (error) {}
 

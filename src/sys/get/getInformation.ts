@@ -12,6 +12,6 @@ export function getInformation(component: any) {
     result.link = arrayCheck(component.documentationLinks) && component.documentationLinks[0].uri ? component.documentationLinks[0].uri : null;
 
     // Return
-    return result ? result : null;
+    return result;
 
 }

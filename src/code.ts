@@ -1,10 +1,9 @@
 // Import
-
 import { arrayCheck, handleError, notifyAndClose } from "./helpers";
-
 import { run } from "./sys/run";
 import { fonts } from "./data/fonts";
 import { test } from "./sys/test";
+import { figmaComponents } from "./data/components";
 
 // Get the user current selection
 const selection: any = figma.currentPage.selection;
@@ -15,10 +14,14 @@ const selection: any = figma.currentPage.selection;
 if (arrayCheck(selection)) {
 
     // Load fonts
-    if (arrayCheck(fonts)) { for (const f of fonts) { await figma.loadFontAsync(f) } };
+    if (arrayCheck(fonts)) { for (const f of fonts) { await figma.loadFontAsync(f) } }
+
+    // Get reusable components
+    const reusableComps: any = [];
+    if (arrayCheck(figmaComponents)) { for (const c of figmaComponents) { reusableComps.push(await figma.getNodeByIdAsync(c)) } }
 
     // Run the plugin
-    try { run(selection); notifyAndClose('All done baby!'); }
+    try { await run(selection, reusableComps); notifyAndClose('All done baby!'); }
 
     // Catch any errors, log in the console and close plugin
     catch(error: any) { handleError('😢😢 Something went wrong', error) }

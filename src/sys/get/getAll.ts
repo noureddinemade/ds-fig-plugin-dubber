@@ -1,10 +1,12 @@
-import { notifyAndClose } from "../../helpers";
 import { getAnatomy } from "./getAnatomy";
 import { getInformation } from "./getInformation";
 import { getProperties } from "./getProperties";
 
 // Get all required from component
-export function getAll(selectedItems: any[], toDocument: any[]) {
+export function getAll(selectedItems: any[]) {
+
+    // Set up
+    let result: any = [];
 
     // Loop thru selection
     selectedItems.forEach((i: any) => {
@@ -20,17 +22,16 @@ export function getAll(selectedItems: any[], toDocument: any[]) {
             // Define information to store in component
             component.info      = getInformation(i);
             component.props     = getProperties(i);
-            component.anatomy   = getAnatomy(i, component.props);
-            
-            // Check component
-            console.log(component);
-            
+            component.anatomy   = getAnatomy(i);
 
         }
 
         // If this item is a valid component then add to be documented
-        if (component) toDocument.push(component);
+        if (component) { result.push(component) };
 
     });
+
+    // Return
+    return result;
 
 }
