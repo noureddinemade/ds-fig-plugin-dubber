@@ -1,19 +1,31 @@
-import { frame } from "../../data/styles";
-import { arrayCheck, create } from "../../helpers";
+// Import
+import { arrayCheck } from "../../helpers";
 
 // Get anatomy from component
-export function getAnatomy(component: any) {
+export function getAnatomy(component: any, props: any) {
 
     // Set up
-    let result:     any     = null;
-    let defaultV:   any     = component.defaultVariant;
-    let children:   any     = arrayCheck(defaultV.children) ? defaultV.children : null;
+    let result:             any = null;
+    let anatomyInstance:    any = component.defaultVariant;
+        anatomyInstance         = anatomyInstance.createInstance();
+    let children:           any = arrayCheck(anatomyInstance.children) ? anatomyInstance.children : null;
 
     // Loop thru children if they exist
     if (children) {
 
+        // Name instance
+        anatomyInstance.name = 'anatomyInstance';
+
+        // Check if there are boolean props
+        if (arrayCheck(props.boolean)) {
+
+            // Loop thru booleans and turn them on for instance
+            props.boolean.forEach((b: any) => { if (b.name !== 'focus?') { anatomyInstance.setProperties({ [b.nameSet] : true }) } });
+
+        }
+
         // Set result as array
-        result = [];
+        result = { items: [], variant: anatomyInstance };
 
         children.forEach((c: any, k: number) => {
 
@@ -21,11 +33,11 @@ export function getAnatomy(component: any) {
 
             if (c.name !== 'focus') {
 
-                result.push({
+                result.items.push({
 
-                    name:   c.visible === true ? c.name : `${c.name} (optional)`,
-                    x:      c.x,
-                    y:      c.y,
+                    name:   c.name,
+                    x:      c.x - anatomyInstance.x,
+                    y:      c.y - anatomyInstance.y,
                     key:    k+1
 
                 })

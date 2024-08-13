@@ -4,13 +4,18 @@ import { arrayCheck, cleanName, cleanType, namingCheck, notifyAndClose, sortArra
 export function getProperties(component: any) {
 
     // Set up
-    let props:  any = component.componentPropertyDefinitions;
-    let result: any = null;
+    let result:         any = null;
+    let props:          any = component.componentPropertyDefinitions;
+    let propVariant:    any = component.defaultVariant;
+        propVariant         = propVariant.createInstance();
+
+    // Customise instance
+    propVariant.name = 'propertyInstance';
 
     // Check if component has properties and then loop thru them
     if (props) {
 
-        result = { variant: [], instance: [], text: [], boolean: [] };
+        result = { variant: [], instance: [], text: [], boolean: [], propVariant: propVariant };
 
         for (const key in props) {
 
@@ -21,7 +26,7 @@ export function getProperties(component: any) {
                     p.nameSet   = key;
                     p.name      = cleanName(key, 'prop');
                     p.type      = cleanType(key, k);
-                    p.default   = p.type === 'b' ? Boolean(p.default) : k.defaultValue;
+                    p.default   = p.type === 'b' ? Boolean(k.defaultValue) : k.defaultValue;
                     p.options   = p.type === 'v' ? k.variantOptions : null;
                     p.preferred = p.type === 'i' ? k.preferredValues : null;
                 

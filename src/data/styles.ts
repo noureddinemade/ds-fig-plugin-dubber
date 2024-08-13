@@ -6,4 +6,9 @@ const frameGap              = { key: 'itemSpacing', value: 1 };
 const frameVertical         = { key: 'layoutMode', value: 'VERTICAL' };
 const frameLayout           = [{ key: 'primaryAxisSizingMode', value: 'AUTO' },{ key: 'counterAxisSizingMode', value: 'AUTO' }];
 
+// Size element
+const sizeFrameGap          = { key: 'itemSpacing', value: 8 };
+const sizeFrameLayout       = [{ key: 'primaryAxisSizingMode', value: 'AUTO' },{ key: 'counterAxisSizingMode', value: 'AUTO' }];
+
 export const frameProps     = [ frameBg, frameLayout, frameVertical, frameGap, frameMinWidth, frameMaxWidth ];
+export const sizeFrameProps = [ frameBg, sizeFrameLayout, frameVertical, sizeFrameGap ];

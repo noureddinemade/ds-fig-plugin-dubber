@@ -5,6 +5,7 @@ export const fonts = [
     { family: "IBM Plex Mono", style: "Medium" },
     { family: "Inter", style: "Regular" },
     { family: "Inter", style: "Medium" },
-    { family: "Inter", style: "Semi Bold" }
+    { family: "Inter", style: "Semi Bold" },
+    { family: "Tenon", style: "Bold" },
 
 ];

@@ -1,4 +1,4 @@
-import { arrayCheck } from "../../../helpers";
+import { arrayCheck } from "../../helpers";
 
 // Create property item
 function createProp(prop: any, original: any, parent: any) {

@@ -2,7 +2,7 @@
 import { arrayCheck, handleError, notifyAndClose } from "./helpers";
 import { run } from "./sys/run";
 import { fonts } from "./data/fonts";
-import { test } from "./sys/test";
+import { test } from "./sys/test/test";
 import { figmaComponents } from "./data/components";
 
 // Get the user current selection

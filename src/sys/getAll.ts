@@ -1,6 +1,7 @@
-import { getAnatomy } from "./getAnatomy";
-import { getInformation } from "./getInformation";
-import { getProperties } from "./getProperties";
+// Import
+import { getAnatomy } from "./get/getAnatomy";
+import { getInformation } from "./get/getInformation";
+import { getProperties } from "./get/getProperties";
 
 // Get all required from component
 export function getAll(selectedItems: any[]) {
@@ -11,23 +12,23 @@ export function getAll(selectedItems: any[]) {
     // Loop thru selection
     selectedItems.forEach((i: any) => {
 
-        let component: any = null;
+        let c: any = null;
 
         // Is the selected item a component?
         if (i.type === 'COMPONENT' || i.type === 'COMPONENT_SET') {
 
             // Set up component object for info to be stored in
-            component = {};
+            c = {};
 
             // Define information to store in component
-            component.info      = getInformation(i);
-            component.props     = getProperties(i);
-            component.anatomy   = getAnatomy(i);
+            c.info              = getInformation(i);
+            c.props             = getProperties(i);
+            c.anatomy           = getAnatomy(i, c.props);
 
         }
 
         // If this item is a valid component then add to be documented
-        if (component) { result.push(component) };
+        if (c) { result.push(c) };
 
     });
 

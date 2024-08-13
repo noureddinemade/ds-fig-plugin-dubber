@@ -1,4 +1,4 @@
-import { notifyAndClose } from "../helpers";
+import { notifyAndClose } from "../../helpers";
 
 export async function test(item: any) {
 

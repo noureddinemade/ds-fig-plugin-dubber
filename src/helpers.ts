@@ -235,3 +235,22 @@ export function namingCheck(name: string, type: any) {
     if (error) { throw new Error(error) }
 
 }
+
+// Remove all nodes within a node (basically clear a frame)
+export function clearNodeChildren(node: any) {
+
+    // Loop thru all children and remove each one until the length of the children array reaches 0
+    while (node.children.length > 0) {
+
+        node.children[0].remove();
+
+    }
+
+}
+
+// Capitalise first letter
+export function capitaliseFirstLetter(string: string) {
+
+    return string.charAt(0).toUpperCase() + string.slice(1);
+
+}

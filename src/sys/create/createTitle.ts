@@ -1,5 +1,5 @@
 // Create instances
-export function createTitle(title: any, instance: any, append: any) {
+export function createTitle(title: string, instance: any, parent: any) {
 
     // Set up
     let result: any = instance.createInstance();
@@ -14,7 +14,7 @@ export function createTitle(title: any, instance: any, append: any) {
     });
 
     // Append to frame
-    append.appendChild(result);
+    parent.appendChild(result);
 
     // Return
     return result
