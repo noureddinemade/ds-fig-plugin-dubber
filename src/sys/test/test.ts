@@ -4,7 +4,7 @@ export async function test(item: any) {
 
     try {
 
-        console.log(item.componentPropertyDefinitions);
+        console.log(item.id);
         
     } catch (error) {}
 

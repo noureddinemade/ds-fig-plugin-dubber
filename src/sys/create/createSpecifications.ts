@@ -28,9 +28,9 @@ function createOptionArtifacts(variant: any, parent: any, artifact: any) {
 function createSizeElement(measure: any, artifact: any, type: string, minmax: string) {
 
     // Setup
-    let result:         any = create(type, sizeFrameProps, 'frame');
+    let result:         any = create(`${minmax+type}`, sizeFrameProps, 'frame');
     let sizeElement:    any = measure.defaultVariant.createInstance();
-    let value:          any = minmax+capitaliseFirstLetter(type)
+    let value:          any = minmax+capitaliseFirstLetter(type);
     let sizeA:          any;
     let sizeS:          any;
 
@@ -53,12 +53,16 @@ function createSizeElement(measure: any, artifact: any, type: string, minmax: st
     // Customise element & artfact
     sizeElement.setProperties({ 
 
-        'label#8818:2': `${artifact[value]}`,
-        'direction': type
+        'label#8818:2': `${minmax}:${artifact[value]}`,
+        'direction': type,
+        'type': minmax
     })
 
+    // Resize
     sizeElement.resize(sizeS[0], sizeS[1]);
     artifact.resize(sizeA[0], sizeA[1]);
+
+    type === 'height' ? sizeElement.layoutSizingHorizontal = 'HUG' : sizeElement.layoutSizingHorizontal = 'FIXED';
 
     // Append
     result.appendChild(sizeElement);
@@ -83,19 +87,12 @@ function createSizeArtifacts(parent: any, artifact: any, measure: any) {
 
     // Check if there are any size artifacts to display
     if (arrayCheck(artifacts)) {
-
-        // Set up
-        let grandParent:   any = parent.parent;
-        let sizeArtifacts:  any = parent.clone();
-
-        console.log(parent.name, grandParent.name)
         
         // Clear sizeArtifacts of any previous artifacts
-        clearNodeChildren(sizeArtifacts);
+        clearNodeChildren(parent);
 
         // Append
-        artifacts.forEach((a: any) => { sizeArtifacts.appendChild(a) }) ;
-        grandParent.appendChild(sizeArtifacts);
+        artifacts.forEach((a: any) => { parent.appendChild(a) }) ;
 
     }
 
@@ -114,7 +111,8 @@ export function createSpecifications(props: any, instance: any, parent: any, mea
     if (arrayCheck(props.variant)) {
 
         // Set up
-        let artifactFrame: any = tempBlock.findChild((n: any) => n.name === 'diagram');
+        let artifactFrame:  any = tempBlock.findChild((n: any) => n.name === 'diagram');
+            artifactFrame       = artifactFrame.clone();
 
         // Loop thru variants and create blocks and artifacts
         props.variant.forEach((p: any) => {
@@ -139,11 +137,13 @@ export function createSpecifications(props: any, instance: any, parent: any, mea
         // Create size artifacts
         createSizeArtifacts(artifactFrame, props.propVariant, measure);
 
+        // Append
+        result.appendChild(artifactFrame);
+
     }
 
     // Remove tempBlock & propVariant
     tempBlock.remove();
-    props.propVariant.remove();
 
     // Append to frame
     parent.appendChild(result);

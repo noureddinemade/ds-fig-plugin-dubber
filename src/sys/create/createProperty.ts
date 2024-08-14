@@ -42,8 +42,7 @@ function createProp(prop: any, original: any, parent: any) {
 function createIndividualProps(props: any, parent: any, type: string) {
 
     // Setup
-    let parentFrame:    any = parent.findChild((n: any) => n.name === `property-${type}`);
-        parentFrame         = parentFrame.children[1];
+    let parentFrame:    any = parent.children[1];
     let childFrame:     any = parentFrame.findChild((n: any) => n.name === 'item');
 
     // Loop thru prop values
@@ -58,11 +57,15 @@ function createIndividualProps(props: any, parent: any, type: string) {
 export function createAllProps(props: any, parent: any) {
 
     // Setup
-    let propsFrame:         any = parent.findChild((n: any) => n.name === 'content');
+    let pFrame: any = parent.findChild((n: any) => n.name === 'content');
+    let vFrame: any = pFrame.findChild((n: any) => n.name === 'property-v');
+    let tFrame: any = pFrame.findChild((n: any) => n.name === 'property-t');
+    let bFrame: any = pFrame.findChild((n: any) => n.name === 'property-b');
+    let iFrame: any = pFrame.findChild((n: any) => n.name === 'property-i');
 
-    if (arrayCheck(props.variant))  { createIndividualProps(props.variant, propsFrame, 'v')     }
-    if (arrayCheck(props.text))     { createIndividualProps(props.text, propsFrame, 't')        }
-    if (arrayCheck(props.boolean))  { createIndividualProps(props.boolean, propsFrame, 'b')     }
-    if (arrayCheck(props.instance)) { createIndividualProps(props.instance, propsFrame, 'i')    }
+    arrayCheck(props.variant)   ? createIndividualProps(props.variant, vFrame, 'v')     : vFrame.remove();
+    arrayCheck(props.text)      ? createIndividualProps(props.text, tFrame, 't')        : tFrame.remove();
+    arrayCheck(props.boolean)   ? createIndividualProps(props.boolean, bFrame, 'b')     : bFrame.remove();
+    arrayCheck(props.instance)  ? createIndividualProps(props.instance, iFrame, 'i')    : iFrame.remove();
 
 }

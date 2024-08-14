@@ -13,6 +13,9 @@ export function createAnatomy(anatomy: any, instance: any, parent: any) {
     // Place instance in diagram frame
     diagramFrame.appendChild(anatomy.variant);
 
+    // Check size of anatomy.variant and rescale IF it's bigger than the bounds of the frame;
+    if (anatomy.variant.width >= 1040) { anatomy.variant.rescale(0.8) };
+
     // Resize and move digramFrame to match instance
     diagramMarkers.resizeWithoutConstraints(anatomy.variant.width, anatomy.variant.height);
     diagramMarkers.x = anatomy.variant.x;

@@ -6,7 +6,7 @@ export function getAnatomy(component: any, props: any) {
 
     // Set up
     let result:             any = null;
-    let anatomyInstance:    any = component.defaultVariant;
+    let anatomyInstance:    any = component.defaultVariant ? component.defaultVariant : component;
         anatomyInstance         = anatomyInstance.createInstance();
     let children:           any = arrayCheck(anatomyInstance.children) ? anatomyInstance.children : null;
 

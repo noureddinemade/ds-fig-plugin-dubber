@@ -5,8 +5,8 @@ export function getProperties(component: any) {
 
     // Set up
     let result:         any = null;
-    let props:          any = component.componentPropertyDefinitions;
-    let propVariant:    any = component.defaultVariant;
+    let props:          any = component.componentPropertyDefinitions ;
+    let propVariant:    any = component.defaultVariant ? component.defaultVariant : component;
         propVariant         = propVariant.createInstance();
 
     // Customise instance

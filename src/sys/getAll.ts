@@ -12,6 +12,8 @@ export function getAll(selectedItems: any[]) {
     // Loop thru selection
     selectedItems.forEach((i: any) => {
 
+        console.log(i);
+
         let c: any = null;
 
         // Is the selected item a component?
