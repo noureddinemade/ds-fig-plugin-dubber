@@ -1,54 +1,62 @@
 // Import
+import { AnatomyResult, PropertiesResult } from "../../data/definitions";
 import { arrayCheck } from "../../helpers";
 
 // Get anatomy from component
-export function getAnatomy(component: any, props: any) {
+export function getAnatomy(component: ComponentSetNode, props: PropertiesResult | null): AnatomyResult | null {
 
     // Set up
-    let result:             any = null;
-    let anatomyInstance:    any = component.defaultVariant ? component.defaultVariant : component;
-        anatomyInstance         = anatomyInstance.createInstance();
-    let children:           any = arrayCheck(anatomyInstance.children) ? anatomyInstance.children : null;
+    let result:             AnatomyResult | null    = null;
+    let anatomyInstance:    any                     = component.defaultVariant ? component.defaultVariant : component;
 
-    // Loop thru children if they exist
-    if (children) {
+    // Ensure anatomyInstance is not null
+    if (anatomyInstance === null) {
+
+        throw new Error("anatomyInstance is null and cannot create an instance.");
+
+    }
+
+        anatomyInstance = anatomyInstance.createInstance();
+    let children = arrayCheck(anatomyInstance.children) ? anatomyInstance.children : [];
+
+    // Loop through children if they exist
+    if (children.length > 0) {
 
         // Name instance
         anatomyInstance.name = 'anatomyInstance';
 
         // Check if there are boolean props
-        if (arrayCheck(props.boolean)) {
+        if (props && arrayCheck(props.boolean)) {
 
-            // Loop thru booleans and turn them on for instance
-            props.boolean.forEach((b: any) => { if (b.name !== 'focus?') { anatomyInstance.setProperties({ [b.nameSet] : true }) } });
+            // Loop through booleans and turn them on for instance
+            props.boolean.forEach((b) => {
 
+                // Exclude accessibility
+                if (b.name !== 'focus?') {
+
+                    anatomyInstance.setProperties({ [b.nameSet]: true });
+
+                }
+
+            });
         }
 
-        // Set result as array
+        // Set result as an array
         result = { items: [], variant: anatomyInstance };
 
-        children.forEach((c: any, k: number) => {
+        result.items = children
+        
+            .filter((c: ComponentNode) => c.name !== 'focus')
+            .map((c: ComponentNode, k: number) => ({
 
-            // Ignore accessibility children
+                name: c.name,
+                x: c.x - anatomyInstance!.x,
+                y: c.y - anatomyInstance!.y,
+                key: k + 1,
 
-            if (c.name !== 'focus') {
-
-                result.items.push({
-
-                    name:   c.name,
-                    x:      c.x - anatomyInstance.x,
-                    y:      c.y - anatomyInstance.y,
-                    key:    k+1
-
-                })
-
-            }
-
-        });
-
+            }));
     }
 
     // Return
     return result;
-
 }

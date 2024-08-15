@@ -239,10 +239,11 @@ export function namingCheck(name: string, type: any) {
 // Remove all nodes within a node (basically clear a frame)
 export function clearNodeChildren(node: any) {
 
-    // Loop thru all children and remove each one until the length of the children array reaches 0
-    while (node.children.length > 0) {
+    // Check if node exists and has a children array
+    if (node && arrayCheck(node.children)) {
 
-        node.children[0].remove();
+        // Loop thru all children and remove each one until the length of the children array reaches 0
+        while (node.children.length > 0) { node.children[0].remove() }
 
     }
 

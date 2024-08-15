@@ -2,19 +2,19 @@
 import { sizeFrameProps } from "../../data/styles";
 import { arrayCheck, capitaliseFirstLetter, clearNodeChildren, create } from "../../helpers";
 
-// Create option artifacts
-function createOptionArtifacts(variant: any, parent: any, artifact: any) {
+// Create option artefacts
+function createOptionartefacts(variant: any, parent: any, artefact: any) {
 
     // Loop thru options
     variant.options.forEach((o: any) => {
 
-        // Clone artifact
-        let variantOption: any = artifact.clone();
+        // Clone artefact
+        let variantOption: any = artefact.clone();
 
-        // Set property for artifact
+        // Set property for artefact
         variantOption.setProperties({ [variant.nameSet] : o });
 
-        // Name artifact
+        // Name artefact
         variantOption.name = o;
 
         // Append to parent
@@ -24,8 +24,8 @@ function createOptionArtifacts(variant: any, parent: any, artifact: any) {
 
 }
 
-// Create size element for artifact
-function createSizeElement(measure: any, artifact: any, type: string, minmax: string) {
+// Create size element for artefact
+function createSizeElement(measure: any, artefact: any, type: string, minmax: string) {
 
     // Setup
     let result:         any = create(`${minmax+type}`, sizeFrameProps, 'frame');
@@ -38,64 +38,66 @@ function createSizeElement(measure: any, artifact: any, type: string, minmax: st
     if (type === 'width') {
 
 
-        sizeA = [artifact[value], artifact.height];
-        sizeS = [artifact[value], sizeElement.height];
+        sizeA = [artefact[value], artefact.height];
+        sizeS = [artefact[value], sizeElement.height];
 
     } else {
 
         result.layoutMode = 'HORIZONTAL';
 
-        sizeA = [artifact.width, artifact[value]];
-        sizeS = [sizeElement.width, artifact[value]];
+        sizeA = [artefact.width, artefact[value]];
+        sizeS = [sizeElement.width, artefact[value]];
         
     }
 
     // Customise element & artfact
     sizeElement.setProperties({ 
 
-        'label#8818:2': `${minmax}:${artifact[value]}`,
+        'label#8818:2': `${minmax}:${artefact[value]}`,
         'direction': type,
         'type': minmax
     })
 
     // Resize
     sizeElement.resize(sizeS[0], sizeS[1]);
-    artifact.resize(sizeA[0], sizeA[1]);
+    artefact.resize(sizeA[0], sizeA[1]);
 
     type === 'height' ? sizeElement.layoutSizingHorizontal = 'HUG' : sizeElement.layoutSizingHorizontal = 'FIXED';
 
     // Append
     result.appendChild(sizeElement);
-    result.appendChild(artifact);
+    result.appendChild(artefact);
 
     // Return
     return result;
 
 }
 
-// Create size artifacts
-function createSizeArtifacts(parent: any, artifact: any, measure: any) {
+// Create size artefacts
+function createSizeartefacts(parent: any, artefact: any, measure: any) {
 
     // Set up
-    let artifacts:  any     = [];
+    let artefacts: any = [];
 
     // Check if variant has a min or max width/height
-    if (artifact.minWidth)  { artifacts.push(createSizeElement(measure, artifact.clone(), 'width', 'min')) };
-    if (artifact.minHeight) { artifacts.push(createSizeElement(measure, artifact.clone(), 'height', 'min')) };
-    if (artifact.maxWidth)  { artifacts.push(createSizeElement(measure, artifact.clone(), 'width', 'max')) };
-    if (artifact.maxHeight)  { artifacts.push(createSizeElement(measure, artifact.clone(), 'height', 'max')) };
+    if (artefact.minWidth)  { artefacts.push(createSizeElement(measure, artefact.clone(), 'width', 'min')) };
+    if (artefact.minHeight) { artefacts.push(createSizeElement(measure, artefact.clone(), 'height', 'min')) };
+    if (artefact.maxWidth)  { artefacts.push(createSizeElement(measure, artefact.clone(), 'width', 'max')) };
+    if (artefact.maxHeight)  { artefacts.push(createSizeElement(measure, artefact.clone(), 'height', 'max')) };
 
-    // Check if there are any size artifacts to display
-    if (arrayCheck(artifacts)) {
+    // Check if there are any size artefacts to display
+    if (arrayCheck(artefacts)) {
         
-        // Clear sizeArtifacts of any previous artifacts
+        // Clear sizeartefacts of any previous artefacts
         clearNodeChildren(parent);
 
         // Append
-        artifacts.forEach((a: any) => { parent.appendChild(a) }) ;
+        artefacts.forEach((a: any) => { parent.appendChild(a) }) ;
 
     }
 
+    // Return
+    return artefacts;
 
 }
 
@@ -110,11 +112,7 @@ export function createSpecifications(props: any, instance: any, parent: any, mea
     // Check if there are variants
     if (arrayCheck(props.variant)) {
 
-        // Set up
-        let artifactFrame:  any = tempBlock.findChild((n: any) => n.name === 'diagram');
-            artifactFrame       = artifactFrame.clone();
-
-        // Loop thru variants and create blocks and artifacts
+        // Loop thru variants and create blocks and artefacts
         props.variant.forEach((p: any) => {
 
             // Create and find elements
@@ -126,19 +124,46 @@ export function createSpecifications(props: any, instance: any, parent: any, mea
             propBlock.name = `block-${p.name}`;
             propBlockTitle.characters = p.name;
 
-            // Create artifacts
-            createOptionArtifacts(p, variantArtifcatFrame, props.propVariant);
+            // Create artefacts
+            createOptionartefacts(p, variantArtifcatFrame, props.propVariant);
 
             // Append to section
             result.appendChild(propBlock);
 
         })
 
-        // Create size artifacts
-        createSizeArtifacts(artifactFrame, props.propVariant, measure);
+        // Create size artefacts
+        let sizeBlock:          any = result.findChild((n: any) => n.name === 'block-size');
+        let sizeartefactFrame:  any = tempBlock.findChild((n: any) => n.name === 'diagram');
+            sizeartefactFrame       = sizeartefactFrame.clone();
+        
+        
+        // Check if any size artefacts were created
+        if (arrayCheck(createSizeartefacts(sizeartefactFrame, props.propVariant, measure))) {
 
-        // Append
-        result.appendChild(artifactFrame);
+            // Check if size block exists
+            if (sizeBlock) { sizeBlock.appendChild(sizeartefactFrame) }
+            else {
+
+                // Create width and height block
+                let wAndHBlock:     any = tempBlock.clone();
+                let wAndHTitle:     any = wAndHBlock.findChild((n: any) => n.name === 'section-subtitle');
+                let wAndHDiagram:   any = wAndHBlock.findChild((n: any) => n.name === 'diagram');
+
+                // Remove default diagram
+                wAndHDiagram.remove();
+
+                // Name block
+                wAndHBlock.name = `block-width-height`;
+                wAndHTitle.characters = 'Width and Height';
+
+                // Append
+                wAndHBlock.appendChild(sizeartefactFrame);
+                result.appendChild(wAndHBlock);
+
+            }
+
+        }
 
     }
 

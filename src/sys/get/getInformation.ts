@@ -4,12 +4,13 @@ import { arrayCheck } from "../../helpers";
 export function getInformation(component: any) {
 
     // Set up
-    let result: any = {};
+    let result: any = {
 
-    // Get name, description and link for full component
-    result.name = component.name;
-    result.desc = component.description === '' ? null : component.description;
-    result.link = arrayCheck(component.documentationLinks) && component.documentationLinks[0].uri ? component.documentationLinks[0].uri : null;
+        name: component.name,
+        desc: component.description === '' ? null : component.description,
+        link: arrayCheck(component.documentationLinks) && component.documentationLinks[0].uri ? component.documentationLinks[0].uri : null
+
+    };
 
     // Return
     return result;

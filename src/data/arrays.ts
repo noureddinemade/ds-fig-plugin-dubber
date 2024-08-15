@@ -1,3 +1,10 @@
+export const artefacts: any = {
+
+    access:     [ 'focus?' ],
+    content:    [ 'label', 'message' ]
+
+}
+
 export const styles: any = {
 
     general:    ['opacity', 'visible', 'radius', 'topRightRadius', 'topLeftRadius', 'bottomRightRadius', 'bottomLeftRadius'],

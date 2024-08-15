@@ -8,7 +8,7 @@ import { createSpecifications } from "./create/createSpecifications";
 import { createTitle } from "./create/createTitle";
 
 // Show all that was found
-export function createAll(components: any[], reusableComps: any[]) {
+export async function createAll(components: any[], reusableComps: any[]) {
 
     // Check if there are components to document
     if (arrayCheck(components)) {
@@ -34,6 +34,9 @@ export function createAll(components: any[], reusableComps: any[]) {
 
             // Clean up and remove spares
             c.props.propVariant.remove();
+
+            // Close plugin
+            notifyAndClose('Documentation was successfully created!');
 
         });
 

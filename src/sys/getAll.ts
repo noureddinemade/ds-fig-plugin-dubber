@@ -1,40 +1,54 @@
 // Import
+import { handleError, notifyAndClose } from "../helpers";
 import { getAnatomy } from "./get/getAnatomy";
 import { getInformation } from "./get/getInformation";
 import { getProperties } from "./get/getProperties";
 
+// Set component to return
+function setComp(component: any) {
+
+    return {
+
+        info:       getInformation(component),
+        props:      getProperties(component),
+        anatomy:    getAnatomy(component, getProperties(component))
+
+    }
+
+}
+
 // Get all required from component
-export function getAll(selectedItems: any[]) {
+export async function getAll(selectedItems: any[]): Promise<any[]> {
 
-    // Set up
-    let result: any = [];
-
-    // Loop thru selection
-    selectedItems.forEach((i: any) => {
-
-        console.log(i);
+    const promises = selectedItems.map(async (i: any) => {
 
         let c: any = null;
 
-        // Is the selected item a component?
         if (i.type === 'COMPONENT' || i.type === 'COMPONENT_SET') {
 
-            // Set up component object for info to be stored in
-            c = {};
+            try { c = setComp(i) } 
+            catch (error) { handleError('Could not get component details', error) }
 
-            // Define information to store in component
-            c.info              = getInformation(i);
-            c.props             = getProperties(i);
-            c.anatomy           = getAnatomy(i, c.props);
+        } else if (i.type === 'INSTANCE') {
+
+            try {
+
+                c = await i.getMainComponentAsync();
+
+                c = setComp(c);
+
+
+            } catch (error) { handleError('Could not get the main component', error) }
 
         }
 
-        // If this item is a valid component then add to be documented
-        if (c) { result.push(c) };
+        console.log(c);
 
+        return c;  // Return the component or null
+    
     });
 
-    // Return
-    return result;
+    const result = await Promise.all(promises);
+    return result.filter(Boolean);  // Filter out any nulls
 
 }

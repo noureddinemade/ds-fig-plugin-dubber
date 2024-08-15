@@ -1,8 +1,9 @@
 // Import
-import { arrayCheck } from "../../helpers";
+import { artefacts } from "../../data/arrays";
+import { arrayCheck, cleanName } from "../../helpers";
 
-// Create accessibility artifacts
-function createAccessibilityArtifact(props: any, name: any) {
+// Create accessibility artefacts
+function createAccessibilityartefact(props: any, name: any) {
 
     // Set up
     let result: any = null;
@@ -37,24 +38,48 @@ export function createBlock(title: string, instance: any, parent: any, props: an
     // Set up
     let result:     any = instance.createInstance();
         result          = result.detachInstance();
-    let heading:    any = result.findChild((n: any) => n.name === 'section-title' );
-    let artifacts:  any = result.findChild((n: any) => n.name === 'diagram');
+    let block:      any = result.findChild((n: any) => n.name === 'block');
+    let heading:    any = result.findChild((n: any) => n.name === 'section-title');
 
     // Update title
     heading.characters = title;
 
-    // Create accessibility artifacts
+    // Create accessibility artefacts
     if (title === 'Accessibility' && props) {
 
-        // Set up artifacts to find
-        let focusArtifact: any = createAccessibilityArtifact(props, 'focus?');
+        // Loop thru accessArtifcats and create artifcats if available
+        artefacts.access.forEach((a: any) => { 
+            
+            // Set up
+            let accessartefact: any = createAccessibilityartefact(props, a);
+            let accessBlock:    any = block;
+
+            // Check
+            if (accessartefact) {
+
+                // Set up block
+                accessBlock = accessBlock.clone();
+
+                let accessTitle:    any = accessBlock.findChild((n: any) => n.name === 'section-subtitle');
+                let accessDiagram:  any = accessBlock.findChild((n: any) => n.name === 'diagram');
+                let accessName:     any = cleanName(a, 'boolen');
+
+                // Name block
+                accessBlock.name = `block-${accessName}`;
+                accessTitle.characters = accessName;
+
+                // Append
+                accessDiagram.appendChild(accessartefact);
+                result.appendChild(accessBlock);
+
+            }
         
-        // Append artifacts if found
-        if (focusArtifact) { artifacts.appendChild(focusArtifact) }
-        else { result.remove(); result = null; }
+        })
     
     }
 
+    // Remove default block
+    block.remove();
 
     // Append
     if (result) { parent.appendChild(result) };

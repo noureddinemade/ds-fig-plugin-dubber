@@ -1,48 +1,46 @@
-import { arrayCheck, cleanName, cleanType, namingCheck, notifyAndClose, sortArray } from "../../helpers";
+import { PropertiesResult, ComponentPropertyDefinition, PropertyResult } from "../../data/definitions";
+import { cleanName, cleanType, namingCheck } from "../../helpers";
 
-// Get properties for component
-export function getProperties(component: any) {
+
+export function getProperties(component: any): PropertiesResult | null {
 
     // Set up
-    let result:         any = null;
-    let props:          any = component.componentPropertyDefinitions ;
+    const result: PropertiesResult = { variant: [], instance: [], text: [], boolean: [], propVariant: null as unknown as InstanceNode };
+    const props: Record<string, ComponentPropertyDefinition> = component.componentPropertyDefinitions;
+
     let propVariant:    any = component.defaultVariant ? component.defaultVariant : component;
-        propVariant         = propVariant.createInstance();
+        propVariant         = propVariant ? propVariant.createInstance() : null;
 
     // Customise instance
-    propVariant.name = 'propertyInstance';
+    if (propVariant) propVariant.name = 'propertyInstance';
 
-    // Check if component has properties and then loop thru them
+    // Check if component has properties and then loop through them
     if (props) {
 
-        result = { variant: [], instance: [], text: [], boolean: [], propVariant: propVariant };
+        result.propVariant = propVariant;
 
-        for (const key in props) {
+        for (const [key, k] of Object.entries(props)) {
 
-            if (props.hasOwnProperty(key)) {
-    
-                let k: any      = props[key];
-                let p: any      = {};
-                    p.nameSet   = key;
-                    p.name      = cleanName(key, 'prop');
-                    p.type      = cleanType(key, k);
-                    p.default   = p.type === 'b' ? Boolean(k.defaultValue) : k.defaultValue;
-                    p.options   = p.type === 'v' ? k.variantOptions : null;
-                    p.preferred = p.type === 'i' ? k.preferredValues : null;
-                
-                if (p.type === 'v') { result.variant.push(p)    };
-                if (p.type === 'i') { result.instance.push(p)   };
-                if (p.type === 't') { result.text.push(p)       };
-                if (p.type === 'b') { result.boolean.push(p)    };
+            let p: PropertyResult = {
 
-                namingCheck(p.name, p.type);
-    
-            }
+                nameSet:    key,
+                name:       cleanName(key, 'prop'),
+                type:       cleanType(key, k),
+                default:    k.defaultValue,
+                options:    k.variantOptions ?? null,
+                preferred:  k.preferredValues ?? null
+
+            };
+
+            if (p.type === 'v') { result.variant.push(p); }
+            if (p.type === 'i') { result.instance.push(p); }
+            if (p.type === 't') { result.text.push(p); }
+            if (p.type === 'b') { result.boolean.push(p); }
+
+            namingCheck(p.name, p.type);
         }
-
     }
 
-    // Return
+    // If there were no properties, return null
     return result;
-
 }
