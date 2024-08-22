@@ -48,3 +48,19 @@ export interface PropertiesResult {
     propVariant: InstanceNode;
 
 }
+
+export interface ComponentInfo {
+
+    name: string;
+    desc: string | null;
+    link: string | null;
+
+}
+
+export interface DocComponent {
+
+    info: ComponentInfo;
+    props: PropertiesResult;
+    anatomy: AnatomyResult;
+
+}

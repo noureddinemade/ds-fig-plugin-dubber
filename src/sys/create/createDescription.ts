@@ -3,7 +3,7 @@ import { arrayCheck } from "../../helpers";
 import { createAllProps } from "./createProperty";
 
 // Create instances
-export function createDescription(description: string, props: any, instance: any, parent: any) {
+export function createDescription(description: string | null, props: any, instance: any) {
 
     // Set up
     let result: any = instance.createInstance();
@@ -15,15 +15,12 @@ export function createDescription(description: string, props: any, instance: any
     result = result.detachInstance();
 
     // Find props section
-    let propsFrame: any = result.findChild((n: any) => n.name === 'comp-props');
+    let propsFrame: FrameNode = result.findChild((n: any) => n.name === 'comp-props');
 
     // Check if there are props and then populate them if they exist
-    let propCheck: any = props && !arrayCheck(props.variant) && !arrayCheck(props.instance) && !arrayCheck(props.boolean) && !arrayCheck(props.text);
+    let propCheck: boolean = props && !arrayCheck(props.variant) && !arrayCheck(props.instance) && !arrayCheck(props.boolean) && !arrayCheck(props.text);
     
     propCheck ? propsFrame.remove() : createAllProps(props, propsFrame);
-
-    // Append to frame
-    parent.appendChild(result);
 
     // Return
     return result

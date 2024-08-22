@@ -2,7 +2,7 @@ import { PropertiesResult, ComponentPropertyDefinition, PropertyResult } from ".
 import { cleanName, cleanType, namingCheck } from "../../helpers";
 
 
-export function getProperties(component: any): PropertiesResult | null {
+export function getProperties(component: ComponentSetNode): PropertiesResult | null {
 
     // Set up
     const result: PropertiesResult = { variant: [], instance: [], text: [], boolean: [], propVariant: null as unknown as InstanceNode };

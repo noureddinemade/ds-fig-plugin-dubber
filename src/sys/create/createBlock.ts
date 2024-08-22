@@ -33,7 +33,7 @@ function createAccessibilityartefact(props: any, name: any) {
 }
 
 // Create a documentation block
-export function createBlock(title: string, instance: any, parent: any, props: any = null) {
+export function createBlock(title: string, instance: any, props: any = null) {
 
     // Set up
     let result:     any = instance.createInstance();
@@ -82,6 +82,6 @@ export function createBlock(title: string, instance: any, parent: any, props: an
     block.remove();
 
     // Append
-    if (result) { parent.appendChild(result) };
+    return result;
 
 }

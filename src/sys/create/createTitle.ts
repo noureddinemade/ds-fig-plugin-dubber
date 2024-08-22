@@ -1,8 +1,8 @@
 // Create instances
-export function createTitle(title: string, instance: any, parent: any) {
+export function createTitle(title: string, instance: any) {
 
     // Set up
-    let result: any = instance.createInstance();
+    let result: InstanceNode = instance.createInstance();
 
     // Adjust properties
     result.setProperties({
@@ -12,9 +12,6 @@ export function createTitle(title: string, instance: any, parent: any) {
         'comp-title#8725:15'    : title
 
     });
-
-    // Append to frame
-    parent.appendChild(result);
 
     // Return
     return result

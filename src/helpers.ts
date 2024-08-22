@@ -255,3 +255,15 @@ export function capitaliseFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
 
 }
+
+// Append child
+export function addToFrame(parent: FrameNode, child: any) {
+
+    if (child) { parent.appendChild(child) }
+
+}
+
+// Resize element
+export function resizeElement(element: any, width: number, height: number): void {
+    element.resize(width, height);
+}

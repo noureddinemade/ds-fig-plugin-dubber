@@ -1,5 +1,6 @@
 // Import
-import { handleError, notifyAndClose } from "../helpers";
+import { DocComponent } from "../data/definitions";
+import { handleError } from "../helpers";
 import { getAnatomy } from "./get/getAnatomy";
 import { getInformation } from "./get/getInformation";
 import { getProperties } from "./get/getProperties";
@@ -41,8 +42,6 @@ export async function getAll(selectedItems: any[]): Promise<any[]> {
             } catch (error) { handleError('Could not get the main component', error) }
 
         }
-
-        console.log(c);
 
         return c;  // Return the component or null
     

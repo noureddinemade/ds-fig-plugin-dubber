@@ -1,14 +1,17 @@
+import { AnatomyResult } from "../../data/definitions";
+
 // Create instances
-export function createAnatomy(anatomy: any, instance: any, parent: any) {
+export function createAnatomy(anatomy: AnatomyResult, instance: ComponentNode) {
 
     // Set up
-    let result:             any = instance.createInstance();
-        result                  = result.detachInstance();
+    let result:             InstanceNode | FrameNode    = instance.createInstance();
+        result                                          = result.detachInstance();
+
     let diagramFrame:       any = result.findChild((n: any) => n.name === 'diagram');
     let diagramMarkers:     any = diagramFrame.findChild((n: any) => n.name === 'annotations');
-    let diagramMarker:      any = diagramMarkers.findChild((n: any) => n.name === 'marker.number');
     let annotationFrame:    any = result.findChild((n: any) => n.name === 'annotations');
-    let annotationMarker:   any = annotationFrame.findChild((n: any) => n.name === 'marker-key');
+    let diagramMarker:      InstanceNode = diagramMarkers.findChild((n: any) => n.name === 'marker.number');
+    let annotationMarker:   InstanceNode = annotationFrame.findChild((n: any) => n.name === 'marker-key');
 
     // Place instance in diagram frame
     diagramFrame.appendChild(anatomy.variant);
@@ -25,7 +28,7 @@ export function createAnatomy(anatomy: any, instance: any, parent: any) {
     anatomy.items.forEach((i: any, k: any) => {
 
         // Create annotation markers
-        let itemAnnotation:         any = annotationMarker.clone();
+        let itemAnnotation:         InstanceNode = annotationMarker.clone();
         let itemAnnotationMarker:   any = itemAnnotation.findChild((n: any) => n.name === 'marker-group' );
             itemAnnotationMarker        = itemAnnotationMarker.findChild((n: any) => n.name === 'marker-1' );
         let itemDiagram:            any = diagramMarker.clone();
@@ -48,9 +51,6 @@ export function createAnatomy(anatomy: any, instance: any, parent: any) {
     // Remove defaults
     annotationMarker.remove();
     diagramMarker.remove();
-
-    // Append to frame
-    parent.appendChild(result);
 
     // Return
     return result

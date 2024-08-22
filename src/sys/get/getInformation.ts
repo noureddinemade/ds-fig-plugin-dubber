@@ -1,10 +1,11 @@
+import { ComponentInfo } from "../../data/definitions";
 import { arrayCheck } from "../../helpers";
 
 // Get information from component
-export function getInformation(component: any) {
+export function getInformation(component: ComponentNode) {
 
     // Set up
-    let result: any = {
+    let result: ComponentInfo = {
 
         name: component.name,
         desc: component.description === '' ? null : component.description,
