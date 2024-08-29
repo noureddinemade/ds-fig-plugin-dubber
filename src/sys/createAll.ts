@@ -11,7 +11,7 @@ import { createTitle } from "./create/createTitle";
 // Show all that was found
 export async function createAll(
     components: DocComponent[], 
-    reusableComps: ComponentNode[]
+    reusableComps: any[]
 ): Promise<void> {
 
     // Ensure components array is not empty

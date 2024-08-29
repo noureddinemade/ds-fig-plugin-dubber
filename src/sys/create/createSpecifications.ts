@@ -56,7 +56,7 @@ function createSizeElement(
 
     // Customize element & artefact
     sizeElement.setProperties({ 
-        'label#8818:2': `${minmax}:${artefact[value]}`,
+        'label#8818:2': `${minmax}:${artefact[value]}px`,
         'direction': type,
         'type': minmax,
     });
@@ -65,6 +65,7 @@ function createSizeElement(
     resizeElement(artefact, artefactSize[0], artefactSize[1]);
 
     sizeElement.layoutSizingHorizontal = type === 'height' ? 'HUG' : 'FIXED';
+    result.layoutMode =  type === 'height' ? 'HORIZONTAL' : 'VERTICAL';
 
     // Append to result frame
     result.appendChild(sizeElement);
@@ -73,7 +74,6 @@ function createSizeElement(
     // Return
     return result;
 }
-
 
 // Create size artefacts
 function createSizeArtefacts(parent: FrameNode, artefact: FrameNode, measure: ComponentSetNode): FrameNode[] {
@@ -105,7 +105,6 @@ function createSizeArtefacts(parent: FrameNode, artefact: FrameNode, measure: Co
     // Return
     return sizeElements;
 }
-
 
 // Create instances
 export function createSpecifications(props: {

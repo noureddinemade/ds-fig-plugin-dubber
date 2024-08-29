@@ -1,87 +1,98 @@
 // Import
 import { artefacts } from "../../data/arrays";
-import { arrayCheck, cleanName } from "../../helpers";
+import { cleanName } from "../../helpers";
 
 // Create accessibility artefacts
-function createAccessibilityartefact(props: any, name: any) {
+function createAccessibilityArtefact(props: {
+    boolean: { name: string; nameSet: string }[];
+    propVariant: InstanceNode;
+}, name: string): InstanceNode | null {
 
-    // Set up
-    let result: any = null;
-    let boolean: any = props.boolean.filter((a: any) => a.name === name);
+    // Filter boolean properties based on the provided name
+    const matchingProps = props.boolean.filter(prop => prop.name === name);
 
-    // Check if there are any boolean matches
-    if (arrayCheck(boolean)) {
-
-        // Loop thru booleans to find accessibility related props
-        boolean.forEach((b: any) => {
-
-            // Create instance of component
-            let instance: any = props.propVariant.clone();
-
-            // Turn on property
-            instance.setProperties({ [b.nameSet]: true });
-
-            // Append
-            result = instance;
-
-        })
-
+    // Check if there are any matches
+    if (matchingProps.length === 0) {
+        return null; // No matches found, return null
     }
 
-    // Return
-    return result;
+    // Create and configure the instance for the first matching prop
+    const matchedProp = matchingProps[0];
+    const instance = props.propVariant.clone();
+    instance.setProperties({ [matchedProp.nameSet]: true });
+
+    return instance;
 }
 
-// Create a documentation block
-export function createBlock(title: string, instance: any, props: any = null) {
+// Create content artefacts
+function createContentArtefact(props: any, artefactName: any) {
+    return true;
+}
 
-    // Set up
-    let result:     any = instance.createInstance();
-        result          = result.detachInstance();
-    let block:      any = result.findChild((n: any) => n.name === 'block');
-    let heading:    any = result.findChild((n: any) => n.name === 'section-title');
+// Create accessbility block
+function createAccessibilityBlock(props: any, blockTemplate: FrameNode, result: FrameNode) {
+    artefacts.access.forEach((artefactName: any) => {
+        let artefact = createAccessibilityArtefact(props, artefactName);
+        
+        if (artefact) {
+            let accessBlock = blockTemplate.clone();
+            let accessTitle = accessBlock.findChild((n) => n.name === 'section-subtitle') as TextNode | null;
+            let accessDiagram = accessBlock.findChild((n) => n.name === 'diagram') as FrameNode | null;
+            let cleanArtefactName = cleanName(artefactName, 'boolean');
 
-    // Update title
+            if (accessTitle) accessTitle.characters = cleanArtefactName;
+            if (accessDiagram) accessDiagram.appendChild(artefact);
+
+            accessBlock.name = `block-${cleanArtefactName}`;
+            result.appendChild(accessBlock);
+        }
+    });
+}
+
+// Create content block
+function createContentBlock(props: any, blockTemplate: FrameNode, result: FrameNode) {
+    artefacts.content.forEach((artefactName: any) => {
+        let artefact = createContentArtefact(props, artefactName);
+
+        if (artefact) {
+            let accessBlock = blockTemplate.clone();
+            let accessTitle = accessBlock.findChild((n) => n.name === 'section-subtitle') as TextNode | null;
+            let accessDiagram = accessBlock.findChild((n) => n.name === 'diagram') as FrameNode | null;
+            let cleanArtefactName = cleanName(artefactName, 'boolean');
+
+            if (accessTitle) accessTitle.characters = cleanArtefactName;
+            // if (accessDiagram) accessDiagram.appendChild(artefact);
+
+            accessBlock.name = `block-${cleanArtefactName}`;
+            result.appendChild(accessBlock);
+        }
+    });
+}
+
+
+// Create the block
+export function createBlock(title: string, instance: ComponentNode, props: any = null): FrameNode | null {
+
+    // Create and detach the instance
+    let result = instance.createInstance().detachInstance();
+    let block = result.findChild((n) => n.name === 'block') as FrameNode | null;
+    let heading = result.findChild((n) => n.name === 'section-title') as TextNode | null;
+
+    // Error handling if block or heading is not found
+    if (!block || !heading) { throw new Error('Could not find block or section-title') }
+
+    // Set the title of the block
     heading.characters = title;
 
-    // Create accessibility artefacts
-    if (title === 'Accessibility' && props) {
+    // Create accessibility artefacts if applicable
+    if (title === 'Accessibility' && props) { createAccessibilityBlock(props, block, result) }
 
-        // Loop thru accessArtifcats and create artifcats if available
-        artefacts.access.forEach((a: any) => { 
-            
-            // Set up
-            let accessartefact: any = createAccessibilityartefact(props, a);
-            let accessBlock:    any = block;
+    // Create content artefacts if applicable
+    if (title === 'Content' && props) { createContentBlock(props, block, result) }
 
-            // Check
-            if (accessartefact) {
-
-                // Set up block
-                accessBlock = accessBlock.clone();
-
-                let accessTitle:    any = accessBlock.findChild((n: any) => n.name === 'section-subtitle');
-                let accessDiagram:  any = accessBlock.findChild((n: any) => n.name === 'diagram');
-                let accessName:     any = cleanName(a, 'boolen');
-
-                // Name block
-                accessBlock.name = `block-${accessName}`;
-                accessTitle.characters = accessName;
-
-                // Append
-                accessDiagram.appendChild(accessartefact);
-                result.appendChild(accessBlock);
-
-            }
-        
-        })
-    
-    }
-
-    // Remove default block
+    // Remove the original block template
     block.remove();
 
-    // Append
+    // Return the customized result
     return result;
-
 }
