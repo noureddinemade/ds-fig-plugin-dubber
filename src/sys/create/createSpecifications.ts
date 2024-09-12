@@ -19,18 +19,25 @@ function createOptionArtefacts(variant: PropertyResult, parent: any, artefact: I
 
         variant.options.forEach((o: string) => {
 
-            // Clone artefact
-            let variantOption: InstanceNode = artefact.clone();
-    
-            // Set property for artefact
-            variantOption.setProperties({ [variant.nameSet] : o });
-    
-            // Name artefact
-            variantOption.name = o;
-    
-            // Append to parent
-            parent.appendChild(variantOption);
-    
+            try {
+
+                // Clone artefact
+                let variantOption: InstanceNode = artefact.clone();
+
+                variantOption.setProperties({ [variant.nameSet]: o });
+        
+                // Name artefact
+                variantOption.name = o;
+        
+                // Append to parent
+                parent.appendChild(variantOption);
+                
+            } catch (error) {
+
+                console.warn(`Failed to set properties for ${variant.nameSet} with option ${o}:`, error);
+                
+            }
+
         })
 
     }
@@ -121,6 +128,7 @@ export function createSpecifications(props: {
     // Handle variants
     if (props.variant && props.variant.length > 0) {
         props.variant.forEach(variant => {
+
             const propBlock: FrameNode = tempBlock?.clone() as FrameNode;
             const variantArtifactFrame: FrameNode | null = propBlock.findChild(node => node.name === 'diagram') as FrameNode;
             const propBlockTitle: TextNode | null = propBlock.findChild(node => node.name === 'section-subtitle') as TextNode;
