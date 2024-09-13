@@ -1,6 +1,6 @@
 // Import
 import { DocComponent } from "../data/definitions";
-import { frameProps } from "../data/styles";
+import { nodeStyles } from "../data/styles";
 import { addToFrame, arrayCheck, create, handleError, notifyAndClose } from "../helpers";
 import { createAnatomy } from "./create/createAnatomy";
 import { createBlock } from "./create/createBlock";
@@ -23,7 +23,7 @@ export async function createAll(
             const [titleComp, descComp, anatComp, specComp, blockComp, extraComp] = reusableComps;
 
             // Create document frame for the component
-            const compFrame: FrameNode | null = create(`component: ${c.info.name}`, frameProps, 'frame') as FrameNode;
+            const compFrame: FrameNode | null = create(`component: ${c.info.name}`, nodeStyles.frame, 'frame') as FrameNode;
 
             // Ensure compFrame is created
             if (!compFrame) {

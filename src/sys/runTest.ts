@@ -2,13 +2,13 @@ import { notifyAndClose } from "../helpers";
 
 export async function runTest(item: any) {
 
-    // try {
+    try {
 
-    //     console.log(item.id);
+        console.log(item[0].fills);
         
-    // } catch (error) {}
+    } catch (error) {}
 
-    // //
-    // notifyAndClose('tested');
+    //
+    notifyAndClose('tested');
 
 }

@@ -1,6 +1,7 @@
 // Import
 import { artefacts } from "../../data/arrays";
-import { cleanName } from "../../helpers";
+import { nodeStyles } from "../../data/styles";
+import { arrayCheck, cleanName, create } from "../../helpers";
 
 // Create accessibility artefacts
 function createAccessibilityArtefact(props: {
@@ -12,9 +13,7 @@ function createAccessibilityArtefact(props: {
     const matchingProps = props.boolean.filter(prop => prop.name === name);
 
     // Check if there are any matches
-    if (matchingProps.length === 0) {
-        return null; // No matches found, return null
-    }
+    if (!arrayCheck(matchingProps)) { return null } // No matches found, return null
 
     // Create and configure the instance for the first matching prop
     const matchedProp = matchingProps[0];
@@ -25,8 +24,50 @@ function createAccessibilityArtefact(props: {
 }
 
 // Create content artefacts
-function createContentArtefact(props: any, artefactName: any) {
-    return true;
+function createContentArtefact(props: {
+    text: { name: string; nameSet: string }[];
+    propVariant: InstanceNode;
+}, name: string) {
+
+    // Filter text properties based on the provided name
+    const matchingProps = props.text.filter(prop => prop.name === name);
+
+    // Check if there are any matches
+    if (!arrayCheck(matchingProps)) { return null } // No matches found, return null
+
+    // Create and configure the instance for the first matching prop
+    const matchedProp           = matchingProps[0];
+    let instance:       any     = props.propVariant.clone();
+    const textNodes:    any[]   = instance.findAll((a: any) => a.type === 'TEXT'); // Find all text nodes
+
+    // Loop thru text nodes
+    textNodes.forEach((t: TextNode) => {
+
+        // Check if text node matches the matched prop
+        if (t.componentPropertyReferences && t.componentPropertyReferences.characters === matchedProp.nameSet) {
+
+            // Create and customise outline frame and children
+            const outlineFrame: FrameNode       = create('outline', nodeStyles.blank, 'frame');
+            const textOutline:  RectangleNode   = create('text', nodeStyles.outline, 'rect');
+            
+            outlineFrame.resize(instance.width, instance.height);
+            textOutline.resize(t.width + 8, t.height + 2);
+
+            textOutline.x = t.x - 4;
+            textOutline.y = t.y - 1;
+
+            // Append
+            outlineFrame.appendChild(instance);
+            outlineFrame.appendChild(textOutline);
+
+            instance = outlineFrame;
+
+        }
+
+    });
+
+    return instance;
+
 }
 
 // Create accessbility block
@@ -61,7 +102,7 @@ function createContentBlock(props: any, blockTemplate: FrameNode, result: FrameN
             let cleanArtefactName = cleanName(artefactName, 'boolean');
 
             if (accessTitle) accessTitle.characters = cleanArtefactName;
-            // if (accessDiagram) accessDiagram.appendChild(artefact);
+            if (accessDiagram) accessDiagram.appendChild(artefact);
 
             accessBlock.name = `block-${cleanArtefactName}`;
             result.appendChild(accessBlock);

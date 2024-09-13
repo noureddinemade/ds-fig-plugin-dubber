@@ -1,6 +1,6 @@
 // Import
 import { PropertyResult } from "../../data/definitions";
-import { sizeFrameProps } from "../../data/styles";
+import { nodeStyles } from "../../data/styles";
 import { arrayCheck, capitaliseFirstLetter, clearNodeChildren, create, resizeElement } from "../../helpers";
 
 function setSizeForArtefact(artefact: any, type: string, value: string): [number, number] {
@@ -53,7 +53,7 @@ function createSizeElement(
 ): FrameNode {
 
     // Setup
-    const result: FrameNode = create(`${minmax + type}`, sizeFrameProps, 'frame') as FrameNode;
+    const result: FrameNode = create(`${minmax + type}`, nodeStyles.size, 'frame') as FrameNode;
     const sizeElement: InstanceNode = measure.defaultVariant.createInstance();
     const value = minmax + capitaliseFirstLetter(type);
 
