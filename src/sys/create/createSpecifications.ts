@@ -140,6 +140,8 @@ export function createSpecifications(props: {
                 // Create artefacts for this variant
                 createOptionArtefacts(variant, variantArtifactFrame, props.propVariant);
 
+                variantArtifactFrame.name = `diagram: ${variant.name}`;
+
                 // Append to result
                 result.appendChild(propBlock);
             }
@@ -152,6 +154,7 @@ export function createSpecifications(props: {
         if (sizeArtefactFrame && arrayCheck(createSizeArtefacts(sizeArtefactFrame, props.propVariant, measure))) {
             if (sizeBlock) {
                 sizeBlock.appendChild(sizeArtefactFrame);
+                sizeArtefactFrame.name = 'diagram: width-and-height';
             } else {
                 const wAndHBlock: FrameNode = tempBlock?.clone() as FrameNode;
                 const wAndHTitle: TextNode | null = wAndHBlock.findChild(node => node.name === 'section-subtitle') as TextNode;
@@ -159,13 +162,15 @@ export function createSpecifications(props: {
 
                 if (wAndHBlock && wAndHTitle && wAndHDiagram) {
                     wAndHDiagram.remove();
-                    wAndHBlock.name = `block-width-height`;
+
+                    wAndHBlock.name = `block-width-and-height`;
                     wAndHTitle.characters = 'Width and Height';
                     wAndHBlock.appendChild(sizeArtefactFrame);
                     result.appendChild(wAndHBlock);
                 }
             }
         }
+        else { sizeArtefactFrame.remove() }
     }
 
     // Clean up

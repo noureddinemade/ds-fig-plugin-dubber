@@ -1,7 +1,6 @@
 export const artefacts: any = {
 
-    access:     [ 'focus?' ],
-    content:    [ 'label', 'message' ]
+    access:     [ 'focus?' ]
 
 }
 

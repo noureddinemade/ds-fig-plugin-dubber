@@ -1,5 +1,6 @@
 // Import
 import { artefacts } from "../../data/arrays";
+import { PropertyResult } from "../../data/definitions";
 import { nodeStyles } from "../../data/styles";
 import { arrayCheck, cleanName, create } from "../../helpers";
 
@@ -24,27 +25,17 @@ function createAccessibilityArtefact(props: {
 }
 
 // Create content artefacts
-function createContentArtefact(props: {
-    text: { name: string; nameSet: string }[];
-    propVariant: InstanceNode;
-}, name: string) {
-
-    // Filter text properties based on the provided name
-    const matchingProps = props.text.filter(prop => prop.name === name);
-
-    // Check if there are any matches
-    if (!arrayCheck(matchingProps)) { return null } // No matches found, return null
+function createContentArtefact(property: PropertyResult, variant: InstanceNode) {
 
     // Create and configure the instance for the first matching prop
-    const matchedProp           = matchingProps[0];
-    let instance:       any     = props.propVariant.clone();
+    let instance:       any     = variant.clone();
     const textNodes:    any[]   = instance.findAll((a: any) => a.type === 'TEXT'); // Find all text nodes
 
     // Loop thru text nodes
     textNodes.forEach((t: TextNode) => {
 
         // Check if text node matches the matched prop
-        if (t.componentPropertyReferences && t.componentPropertyReferences.characters === matchedProp.nameSet) {
+        if (t.componentPropertyReferences && t.componentPropertyReferences.characters === property.nameSet) {
 
             // Create and customise outline frame and children
             const outlineFrame: FrameNode       = create('outline', nodeStyles.blank, 'frame');
@@ -92,22 +83,26 @@ function createAccessibilityBlock(props: any, blockTemplate: FrameNode, result: 
 
 // Create content block
 function createContentBlock(props: any, blockTemplate: FrameNode, result: FrameNode) {
-    artefacts.content.forEach((artefactName: any) => {
-        let artefact = createContentArtefact(props, artefactName);
 
-        if (artefact) {
-            let accessBlock = blockTemplate.clone();
-            let accessTitle = accessBlock.findChild((n) => n.name === 'section-subtitle') as TextNode | null;
-            let accessDiagram = accessBlock.findChild((n) => n.name === 'diagram') as FrameNode | null;
-            let cleanArtefactName = cleanName(artefactName, 'boolean');
+    if (arrayCheck(props.text)) {
 
-            if (accessTitle) accessTitle.characters = cleanArtefactName;
-            if (accessDiagram) accessDiagram.appendChild(artefact);
+        props.text.forEach((p: any) => {
+            let artefact = createContentArtefact(p, props.propVariant);
+    
+            if (artefact) {
+                let accessBlock = blockTemplate.clone();
+                let accessTitle = accessBlock.findChild((n) => n.name === 'section-subtitle') as TextNode | null;
+                let accessDiagram = accessBlock.findChild((n) => n.name === 'diagram') as FrameNode | null;
+    
+                if (accessTitle) accessTitle.characters = p.name;
+                if (accessDiagram) accessDiagram.appendChild(artefact);
+    
+                accessBlock.name = `block-${p.name}`;
+                result.appendChild(accessBlock);
+            }
+        });
 
-            accessBlock.name = `block-${cleanArtefactName}`;
-            result.appendChild(accessBlock);
-        }
-    });
+    }
 }
 
 
