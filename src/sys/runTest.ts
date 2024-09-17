@@ -4,7 +4,7 @@ export async function runTest(item: any) {
 
     try {
 
-        console.log(item[0].fills);
+        console.log();
         
     } catch (error) {}
 

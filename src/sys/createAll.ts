@@ -20,7 +20,7 @@ export async function createAll(
         components.forEach((c: DocComponent) => {
 
             // Extract reusable component blocks
-            const [titleComp, descComp, anatComp, specComp, blockComp, extraComp] = reusableComps;
+            const [titleComp, descComp, anatComp, blockComp, measureComp] = reusableComps;
 
             // Create document frame for the component
             const compFrame: FrameNode | null = create(`component: ${c.info.name}`, nodeStyles.frame, 'frame') as FrameNode;
@@ -32,19 +32,19 @@ export async function createAll(
             }
 
             // Create documentation blocks
-            const compTitle:    InstanceNode     = createTitle(c.info.name, titleComp);
-            const compDesc:     FrameNode | null = createDescription(c.info.desc, c.props, descComp);
-            const compAnat:     FrameNode | null = c.anatomy ? createAnatomy(c.anatomy, anatComp) : null;
-            const compSpec:     FrameNode | null = c.props ? createSpecifications(c.props, specComp, extraComp) : null;
-            const compUsage:    FrameNode | null = createBlock('Usage', blockComp);
-            const compBehave:   FrameNode | null = createBlock('Behaviour', blockComp);
-            const compAccess:   FrameNode | null = createBlock('Accessibility', blockComp, c.props);
-            const compContent:  FrameNode | null = arrayCheck(c.props.text) ? createBlock('Content', blockComp, c.props) : null;
+            const title:            InstanceNode     = createTitle(c.info.name, titleComp);
+            const description:      FrameNode | null = createDescription(c.info.desc, c.props, descComp);
+            const usage:            FrameNode | null = createBlock('Usage', blockComp);
+            const behaviour:        FrameNode | null = createBlock('Behaviour', blockComp);
+            const accessbility:     FrameNode | null = createBlock('Accessibility', blockComp, c.props);
+            const anatomy:          FrameNode | null = c.anatomy ? createAnatomy(c.anatomy, anatComp) : null;
+            const specifications:   FrameNode | null = c.props ? createSpecifications(c.props, blockComp, measureComp) : null;
+            const content:          FrameNode | null = c.props.text && arrayCheck(c.props.text) ? createBlock('Content', blockComp, c.props) : null;
 
             // Append
-            const toAppend: any[] = [compTitle, compDesc, compAnat, compSpec, compUsage, compBehave, compAccess, compContent ];
+            const toAppend: any[] = [title, description, anatomy, specifications, usage, behaviour, accessbility, content];
 
-            toAppend.forEach((i: any) => addToFrame(compFrame, i) )
+            toAppend.forEach((i: any) => addToFrame(compFrame, i) );
 
             // Clean up and remove spares (if any)
             if (c.props.propVariant) {

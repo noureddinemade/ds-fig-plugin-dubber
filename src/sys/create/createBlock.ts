@@ -1,41 +1,72 @@
 // Import
 import { artefacts } from "../../data/arrays";
-import { PropertyResult } from "../../data/definitions";
+import { PropertiesResult, PropertyResult } from "../../data/definitions";
 import { nodeStyles } from "../../data/styles";
 import { arrayCheck, cleanName, create } from "../../helpers";
 
 // Create accessibility artefacts
-function createAccessibilityArtefact(props: {
-    boolean: { name: string; nameSet: string }[];
-    propVariant: InstanceNode;
-}, name: string): InstanceNode | null {
+function createAccessibilityBlock(props: any, block: FrameNode) {
 
-    // Filter boolean properties based on the provided name
-    const matchingProps = props.boolean.filter(prop => prop.name === name);
+    // Loop thru common accessibility properties
+    for (const a of artefacts.accessibility) {
 
-    // Check if there are any matches
-    if (!arrayCheck(matchingProps)) { return null } // No matches found, return null
+        // Find  match
+        let match = props.boolean.filter((prop: any) => prop.name === a);
 
-    // Create and configure the instance for the first matching prop
-    const matchedProp = matchingProps[0];
-    const instance = props.propVariant.clone();
-    instance.setProperties({ [matchedProp.nameSet]: true });
+        // Check if component properties matches the current accessibility property
+        if (arrayCheck(match)) {
 
-    return instance;
+            // Set up
+            const aBlock:   FrameNode   = block.clone();
+        
+            let aTitle      = aBlock.findChild(c => c.name === 'section-subtitle') as TextNode | null;
+            let aDiagram    = aBlock.findChild(c => c.name === 'diagram') as FrameNode | null;
+
+            const instance = props.propVariant.clone();
+            match = match[0];
+
+            instance.setProperties({ [match.nameSet]: true });
+            instance.name = match.name;
+
+            // Customise block
+            if (aTitle)     { aTitle.characters = cleanName(a, 'boolean') };
+            if (aDiagram)   { aDiagram.appendChild(instance) };
+
+            // Return block
+            return aBlock;
+
+        } else { return null }
+
+    }
+
 }
 
-// Create content artefacts
-function createContentArtefact(property: PropertyResult, variant: InstanceNode) {
+// Create accessibility artefacts
+function createContentBlock(props: any, block: FrameNode) {
 
-    // Create and configure the instance for the first matching prop
-    let instance:       any     = variant.clone();
-    const textNodes:    any[]   = instance.findAll((a: any) => a.type === 'TEXT'); // Find all text nodes
+    // Set up
+    let textNodes   = props.propVariant;
+        textNodes   = textNodes.findChildren((a: TextNode) => a.type === 'TEXT');
 
-    // Loop thru text nodes
-    textNodes.forEach((t: TextNode) => {
+    // Loop thru found text nodes
+    for (const t of textNodes) {
 
-        // Check if text node matches the matched prop
-        if (t.componentPropertyReferences && t.componentPropertyReferences.characters === property.nameSet) {
+        // Find  match
+        let match = props.text.filter((a: PropertyResult) => a.nameSet === t.componentPropertyReferences.characters);
+
+        // Check if component properties matches the current accessibility property
+        if (arrayCheck(match)) {
+
+            // Set up
+            const cBlock:   FrameNode   = block.clone();
+        
+            let cTitle      = cBlock.findChild(c => c.name === 'section-subtitle') as TextNode | null;
+            let cDiagram    = cBlock.findChild(c => c.name === 'diagram') as FrameNode | null;
+            let instance    = props.propVariant.clone();
+            
+            match = match[0];
+
+            instance.name = match.name;
 
             // Create and customise outline frame and children
             const outlineFrame: FrameNode       = create('outline', nodeStyles.blank, 'frame');
@@ -53,66 +84,26 @@ function createContentArtefact(property: PropertyResult, variant: InstanceNode) 
 
             instance = outlineFrame;
 
-        }
+            // Customise block
+            if (cTitle)     { cTitle.characters = match.name };
+            if (cDiagram)   { cDiagram.appendChild(instance) };
 
-    });
+            // Return block
+            return cBlock;
 
-    return instance;
-
-}
-
-// Create accessbility block
-function createAccessibilityBlock(props: any, blockTemplate: FrameNode, result: FrameNode) {
-    artefacts.access.forEach((artefactName: any) => {
-        let artefact = createAccessibilityArtefact(props, artefactName);
-        
-        if (artefact) {
-            let accessBlock = blockTemplate.clone();
-            let accessTitle = accessBlock.findChild((n) => n.name === 'section-subtitle') as TextNode | null;
-            let accessDiagram = accessBlock.findChild((n) => n.name === 'diagram') as FrameNode | null;
-            let cleanArtefactName = cleanName(artefactName, 'boolean');
-
-            if (accessTitle) accessTitle.characters = cleanArtefactName;
-            if (accessDiagram) accessDiagram.appendChild(artefact);
-
-            accessBlock.name = `block-${cleanArtefactName}`;
-            result.appendChild(accessBlock);
-        }
-    });
-}
-
-// Create content block
-function createContentBlock(props: any, blockTemplate: FrameNode, result: FrameNode) {
-
-    if (arrayCheck(props.text)) {
-
-        props.text.forEach((p: any) => {
-            let artefact = createContentArtefact(p, props.propVariant);
-    
-            if (artefact) {
-                let accessBlock = blockTemplate.clone();
-                let accessTitle = accessBlock.findChild((n) => n.name === 'section-subtitle') as TextNode | null;
-                let accessDiagram = accessBlock.findChild((n) => n.name === 'diagram') as FrameNode | null;
-    
-                if (accessTitle) accessTitle.characters = p.name;
-                if (accessDiagram) accessDiagram.appendChild(artefact);
-    
-                accessBlock.name = `block-${p.name}`;
-                result.appendChild(accessBlock);
-            }
-        });
+        } else { return null }
 
     }
+
 }
 
-
 // Create the block
-export function createBlock(title: string, instance: ComponentNode, props: any = null): FrameNode | null {
+export function createBlock(title: string, instance: ComponentNode, props: PropertiesResult | null = null): FrameNode | null {
 
     // Create and detach the instance
-    let result = instance.createInstance().detachInstance();
-    let block = result.findChild((n) => n.name === 'block') as FrameNode | null;
-    let heading = result.findChild((n) => n.name === 'section-title') as TextNode | null;
+    let result      = instance.createInstance().detachInstance();
+    let block       = result.findChild((n) => n.name === 'block') as FrameNode | null;
+    let heading     = result.findChild((n) => n.name === 'section-title') as TextNode | null;
 
     // Error handling if block or heading is not found
     if (!block || !heading) { throw new Error('Could not find block or section-title') }
@@ -120,11 +111,23 @@ export function createBlock(title: string, instance: ComponentNode, props: any =
     // Set the title of the block
     heading.characters = title;
 
-    // Create accessibility artefacts if applicable
-    if (title === 'Accessibility' && props) { createAccessibilityBlock(props, block, result) }
+    // Create specific artefacts
+    if (title === 'Accessibility' && arrayCheck(props?.boolean)) {
 
-    // Create content artefacts if applicable
-    if (title === 'Content' && props) { createContentBlock(props, block, result) }
+        const aBlock = createAccessibilityBlock(props, block);
+
+        if (aBlock) result.appendChild(aBlock);
+    
+    }
+    
+    if (title === 'Content' && arrayCheck(props?.text)) {
+
+        const cBlock = createContentBlock(props, block);
+
+        if (cBlock) result.appendChild(cBlock);
+
+    }
+    
 
     // Remove the original block template
     block.remove();

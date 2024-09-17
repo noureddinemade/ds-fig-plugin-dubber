@@ -31,20 +31,20 @@ export function createAnatomy(anatomy: AnatomyResult, instance: ComponentNode) {
         let itemAnnotation:         InstanceNode = annotationMarker.clone();
         let itemAnnotationMarker:   any = itemAnnotation.findChild((n: any) => n.name === 'marker-group' );
             itemAnnotationMarker        = itemAnnotationMarker.findChild((n: any) => n.name === 'marker-1' );
-        let itemDiagram:            any = diagramMarker.clone();
+        // let itemDiagram:            any = diagramMarker.clone();
         
         // Set labels
         itemAnnotation.setProperties({ 'label#2504:9': i.name });
         itemAnnotationMarker.setProperties({ 'label#2504:0':  `${k+1}` });
-        itemDiagram.setProperties({ 'label#2504:0':  `${k+1}` });
+        // itemDiagram.setProperties({ 'label#2504:0':  `${k+1}` });
 
         // Position diagram marker
-        itemDiagram.x = i.x - 8;
-        itemDiagram.y = i.y - 16;
+        // itemDiagram.x = i.x - 8;
+        // itemDiagram.y = i.y - 16;
 
         // Append labels
         annotationFrame.appendChild(itemAnnotation);
-        diagramMarkers.appendChild(itemDiagram);
+        // diagramMarkers.appendChild(itemDiagram);
 
     });
 
