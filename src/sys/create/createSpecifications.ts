@@ -73,6 +73,7 @@ function createSizeElement(
 
     sizeElement.layoutSizingHorizontal = type === 'height' ? 'HUG' : 'FIXED';
     result.layoutMode =  type === 'height' ? 'HORIZONTAL' : 'VERTICAL';
+    artefact.name = value;
 
     // Append to result frame
     result.appendChild(sizeElement);

@@ -11,7 +11,7 @@ export function createAnatomy(anatomy: AnatomyResult, instance: ComponentNode) {
     let diagramMarkers:     any = diagramFrame.findChild((n: any) => n.name === 'annotations');
     let annotationFrame:    any = result.findChild((n: any) => n.name === 'annotations');
     let diagramMarker:      InstanceNode = diagramMarkers.findChild((n: any) => n.name === 'marker.number');
-    let annotationMarker:   InstanceNode = annotationFrame.findChild((n: any) => n.name === 'marker-key');
+    let annotationMarker:   InstanceNode = annotationFrame.findChild((n: any) => n.name === 'doc.marker-key');
 
     // Place instance in diagram frame
     diagramFrame.appendChild(anatomy.variant);
@@ -24,27 +24,28 @@ export function createAnatomy(anatomy: AnatomyResult, instance: ComponentNode) {
     diagramMarkers.x = anatomy.variant.x;
     diagramMarkers.y = anatomy.variant.y;
 
+
     // Loop thru anatomy
     anatomy.items.forEach((i: any, k: any) => {
 
         // Create annotation markers
         let itemAnnotation:         InstanceNode = annotationMarker.clone();
-        let itemAnnotationMarker:   any = itemAnnotation.findChild((n: any) => n.name === 'marker-group' );
+        let itemAnnotationMarker:   any = itemAnnotation.findChild((n: any) => n.name === 'doc.marker-group' );
             itemAnnotationMarker        = itemAnnotationMarker.findChild((n: any) => n.name === 'marker-1' );
-        // let itemDiagram:            any = diagramMarker.clone();
+        let itemDiagram:            any = diagramMarker.clone();
         
         // Set labels
         itemAnnotation.setProperties({ 'label#2504:9': i.name });
         itemAnnotationMarker.setProperties({ 'label#2504:0':  `${k+1}` });
-        // itemDiagram.setProperties({ 'label#2504:0':  `${k+1}` });
+        itemDiagram.setProperties({ 'label#2504:0':  `${k+1}` });
 
         // Position diagram marker
-        // itemDiagram.x = i.x - 8;
-        // itemDiagram.y = i.y - 16;
+        itemDiagram.x = i.x - 8;
+        itemDiagram.y = i.y - 16;
 
         // Append labels
         annotationFrame.appendChild(itemAnnotation);
-        // diagramMarkers.appendChild(itemDiagram);
+        diagramMarkers.appendChild(itemDiagram);
 
     });
 

@@ -25,13 +25,13 @@ export async function runPlugin(selection: SceneNode[]) {
 
     if (arrayCheck(figmaComponents)) { 
         
-        for (const c of figmaComponents) { 
+        for (const c of figmaComponents) {
 
             try {
 
-                const node = await figma.getNodeByIdAsync(c);
+                const node = c.set ? await figma.importComponentSetByKeyAsync(c.key) : await figma.importComponentByKeyAsync(c.key);
 
-                if (node && node.type !== 'DOCUMENT') { reusableComps.push(node as SceneNode) }
+                if (node) { reusableComps.push(node as SceneNode) }
             
             } catch (error) { handleError('Could not get reusable components', error) }
         

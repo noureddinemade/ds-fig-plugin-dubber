@@ -4,7 +4,7 @@ export async function runTest(item: any) {
 
     try {
 
-        console.log();
+        console.log(item[0].key);
         
     } catch (error) {}
 

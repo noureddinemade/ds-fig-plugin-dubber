@@ -17,7 +17,7 @@ export async function createAll(
     // Ensure components array is not empty
     if (arrayCheck(components)) {
 
-        components.forEach((c: DocComponent) => {
+        components.forEach(async (c: DocComponent) => {
 
             // Extract reusable component blocks
             const [titleComp, descComp, anatComp, blockComp, measureComp] = reusableComps;
@@ -47,8 +47,16 @@ export async function createAll(
             toAppend.forEach((i: any) => addToFrame(compFrame, i) );
 
             // Clean up and remove spares (if any)
-            if (c.props.propVariant) {
-                c.props.propVariant.remove();
+            const toDelete = figma.currentPage.findAll(a => a.name === 'propertyInstance');
+
+            if (arrayCheck(toDelete)) {
+
+                toDelete.forEach(d => {
+
+                    d.remove();
+
+                })
+
             }
 
             // Notify and close the plugin after successful documentation creation
