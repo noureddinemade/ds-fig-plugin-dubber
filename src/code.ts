@@ -5,7 +5,7 @@ import { runTest }  from "./sys/runTest";
 
 // Get the user current selection
 let selection:  SceneNode[] = [...figma.currentPage.selection];
-let testMode:   boolean     = false;
+let testMode:   boolean     = true;
 
 // Check if the user has selected anything
 if (arrayCheck(selection)) {
