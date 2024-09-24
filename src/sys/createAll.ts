@@ -35,7 +35,7 @@ export async function createAll(
             const title:            InstanceNode     = createTitle(c.info.name, titleComp);
             const description:      FrameNode | null = createDescription(c.info.desc, c.props, descComp);
             const usage:            FrameNode | null = createBlock('Usage', blockComp);
-            const behaviour:        FrameNode | null = createBlock('Behaviour', blockComp);
+            const behaviour:        FrameNode | null = createBlock('Behaviour', blockComp, c.props);
             const accessbility:     FrameNode | null = createBlock('Accessibility', blockComp, c.props);
             const anatomy:          FrameNode | null = c.anatomy ? createAnatomy(c.anatomy, anatComp) : null;
             const specifications:   FrameNode | null = c.props ? createSpecifications(c.props, blockComp, measureComp) : null;

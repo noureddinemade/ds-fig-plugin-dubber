@@ -267,3 +267,70 @@ export function addToFrame(parent: FrameNode, child: any) {
 export function resizeElement(element: any, width: number, height: number): void {
     element.resize(width, height);
 }
+
+// Get all children
+export function getAllChildren(node: any, array: any = [], rules: string[] | null = null) {
+
+    // Set up
+    const nodeChildren = node.children;
+    let updatedArray = array;
+
+    // Check if there are any children
+    if (nodeChildren && arrayCheck(nodeChildren)) {
+
+        nodeChildren.forEach((c: any) => {
+
+            // Check if there are any rules
+            if (rules && arrayCheck(rules)) {
+
+                // Check if the focus? rule is present and skip if matches
+                if (rules.includes('focus?') && c.name === 'focus?') {
+                    return; // Skip this node
+                }
+
+                // Check if the INSTANCE rule is present and add only INSTANCE type nodes
+                if (rules.includes('INSTANCE') && c.type === 'INSTANCE') {
+                    updatedArray.push(c);
+                    return; // Stop further digging into this node
+                }
+
+                // Check if the hidden rule is present and skip if matches
+                if (rules.includes('hidden') && !c.visible) {
+                    return; // Skip this node
+                }
+                
+            }
+
+            // If no rules or none of the rules matched, add the node and continue digging
+            updatedArray.push(c);
+            updatedArray = getAllChildren(c, updatedArray, rules);
+
+        })
+
+    }
+
+    return updatedArray;
+
+}
+
+// Get relative x and y positions
+export function getRelativePosition(node: SceneNode, specific: string | null = null): { x: number, y: number } {
+
+    let x = node.x;
+    let y = node.y;
+    let currentNode = node;
+
+    // Traverse up the parent chain until reaching the top-level node
+    while (currentNode.parent && currentNode.parent.type !== 'PAGE') {
+
+        currentNode = currentNode.parent as SceneNode;
+        x += currentNode.x;
+        y += currentNode.y;
+
+        // Check if there is a specific parent
+        if (specific && currentNode.parent?.name === specific) { break }
+    }
+
+    return { x, y };
+    
+}

@@ -22,6 +22,6 @@ const noBg                  = { key: 'fills', value: [] };
 const frameProps            = [ frameBg, frameLayout, frameVertical, frameGap, frameMinWidth, frameMaxWidth ];
 const sizeFrameProps        = [ noBg, sizeFrameLayout, frameVertical, sizeFrameGap, sizeClipContent ];
 const blankFrame            = [ noBg ];
-const textOutline           = [ outlineFill, outlineStrokeWeight, outlineStrokeColour  ];
+const textOutline           = [ outlineFill, outlineStrokeWeight, outlineStrokeColour ];
 
 export const nodeStyles     = { blank: blankFrame, frame: frameProps, size: sizeFrameProps, outline: textOutline }

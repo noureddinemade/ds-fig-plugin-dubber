@@ -2,9 +2,9 @@
 import { artefacts } from "../../data/arrays";
 import { PropertiesResult, PropertyResult } from "../../data/definitions";
 import { nodeStyles } from "../../data/styles";
-import { arrayCheck, cleanName, create } from "../../helpers";
+import { arrayCheck, cleanName, create, getAllChildren, getRelativePosition } from "../../helpers";
 
-// Create accessibility artefacts
+// Create accessibility artefacts & block
 function createAccessibilityBlock(props: any, block: FrameNode) {
 
     // Loop thru common accessibility properties
@@ -41,61 +41,108 @@ function createAccessibilityBlock(props: any, block: FrameNode) {
 
 }
 
-// Create accessibility artefacts
+// Create content artefacts & block
 function createContentBlock(props: any, block: FrameNode) {
 
     // Set up
+    let result      = null;
     let textNodes   = props.propVariant;
-        textNodes   = textNodes.findChildren((a: TextNode) => a.type === 'TEXT');
+        textNodes   = getAllChildren(textNodes);
+        textNodes   = textNodes.filter((a: TextNode) => a.type === 'TEXT');
 
-    // Loop thru found text nodes
-    for (const t of textNodes) {
+    // Check if there are any textnodes
+    if (arrayCheck(textNodes)) {
 
-        // Find  match
-        let match = props.text.filter((a: PropertyResult) => a.nameSet === t.componentPropertyReferences.characters);
+        result = [];
 
-        // Check if component properties matches the current accessibility property
-        if (arrayCheck(match)) {
+        // Loop thru found text nodes
+        textNodes.forEach((t: TextNode) => {
 
-            // Set up
-            const cBlock:   FrameNode   = block.clone();
+            // Find  match
+            let match = props.text.filter((a: PropertyResult) => a.nameSet === t.componentPropertyReferences?.characters);
+
+            // Check if component properties matches the current accessibility property
+            if (arrayCheck(match)) {
+
+                // Set up
+                const cBlock:   FrameNode   = block.clone();
+            
+                let cTitle      = cBlock.findChild(c => c.name === 'section-subtitle') as TextNode | null;
+                let cDiagram    = cBlock.findChild(c => c.name === 'diagram') as FrameNode | null;
+                let instance    = props.propVariant.clone();
+                
+                match = match[0];
+
+                instance.name = match.name;
+
+                // Create and customise outline frame and children
+                const outlineFrame: FrameNode       = create('outline', nodeStyles.blank, 'frame');
+                const textOutline:  RectangleNode   = create('text', nodeStyles.outline, 'rect');
+                const relativePos                   = getRelativePosition(t);
+                
+                outlineFrame.resize(instance.width, instance.height);
+                textOutline.resize(t.width + 8, t.height + 2);
+
+                textOutline.x = relativePos.x - 4;
+                textOutline.y = relativePos.y - 1;
+
+                outlineFrame.clipsContent = false;
+
+                // Append
+                outlineFrame.appendChild(instance);
+                outlineFrame.appendChild(textOutline);
+
+                instance = outlineFrame;
+
+                // Customise block
+                if (cTitle)     { cTitle.characters = match.name };
+                if (cDiagram)   { cDiagram.appendChild(instance) };
+
+                // Return block
+                result.push(cBlock);
+
+            }
+
+        })
         
-            let cTitle      = cBlock.findChild(c => c.name === 'section-subtitle') as TextNode | null;
-            let cDiagram    = cBlock.findChild(c => c.name === 'diagram') as FrameNode | null;
-            let instance    = props.propVariant.clone();
-            
-            match = match[0];
-
-            instance.name = match.name;
-
-            // Create and customise outline frame and children
-            const outlineFrame: FrameNode       = create('outline', nodeStyles.blank, 'frame');
-            const textOutline:  RectangleNode   = create('text', nodeStyles.outline, 'rect');
-            
-            outlineFrame.resize(instance.width, instance.height);
-            textOutline.resize(t.width + 8, t.height + 2);
-
-            textOutline.x = t.x - 4;
-            textOutline.y = t.y - 1;
-
-            // Append
-            outlineFrame.appendChild(instance);
-            outlineFrame.appendChild(textOutline);
-
-            instance = outlineFrame;
-
-            // Customise block
-            if (cTitle)     { cTitle.characters = match.name };
-            if (cDiagram)   { cDiagram.appendChild(instance) };
-
-            // Return block
-            return cBlock;
-
-        } else { return null }
-
     }
 
+    return result;
+
 }
+
+// Create behaviour artefacts & block
+async function createBehaviourBlock(props: any, block: FrameNode) {
+
+    // Set up
+    let result = null;
+
+    try {
+        // Ensure propVariant exists and is of type InstanceNode
+        if (props.propVariant && props.propVariant.type === 'INSTANCE') {
+
+            // Get the main component of the instance
+            let behaviours = props.propVariant;
+                behaviours = await behaviours.getMainComponentAsync();
+
+            if (behaviours) {
+                console.log("Main component found:", behaviours);
+            } else {
+                console.log("No main component available for this instance.");
+            }
+
+        } else {
+            console.log("propVariant is not an instance.");
+        }
+
+    } catch (error) {
+        console.error("Error in createBehaviourBlock:", error);
+    }
+
+    return result;
+
+}
+
 
 // Create the block
 export function createBlock(title: string, instance: ComponentNode, props: PropertiesResult | null = null): FrameNode | null {
@@ -122,9 +169,17 @@ export function createBlock(title: string, instance: ComponentNode, props: Prope
     
     if (title === 'Content' && arrayCheck(props?.text)) {
 
-        const cBlock = createContentBlock(props, block);
+        const cBlocks = createContentBlock(props, block);
 
-        if (cBlock) result.appendChild(cBlock);
+        if (cBlocks && arrayCheck(cBlocks)) { cBlocks.forEach((c: any) => result.appendChild(c)) }
+
+    }
+
+    if (title === 'Behaviour') {
+
+        const bBlocks = createBehaviourBlock(props, block);
+
+        // if (bBlocks && arrayCheck(bBlocks)) { bBlocks.forEach((b: any) => result.appendChild(b)) }
 
     }
     

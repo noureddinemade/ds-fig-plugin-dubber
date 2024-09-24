@@ -1,6 +1,6 @@
 // Import
 import { AnatomyResult, PropertiesResult } from "../../data/definitions";
-import { arrayCheck } from "../../helpers";
+import { arrayCheck, getAllChildren, getRelativePosition } from "../../helpers";
 
 // Get anatomy from component
 export function getAnatomy(component: ComponentSetNode, props: PropertiesResult | null): AnatomyResult | null {
@@ -16,11 +16,12 @@ export function getAnatomy(component: ComponentSetNode, props: PropertiesResult 
 
     }
 
-        anatomyInstance = anatomyInstance.createInstance();
-    let children = arrayCheck(anatomyInstance.children) ? anatomyInstance.children : [];
+    anatomyInstance = anatomyInstance.createInstance();
+
+    let children = getAllChildren(anatomyInstance, undefined, ['INSTANCE']);
 
     // Loop through children if they exist
-    if (children.length > 0) {
+    if (arrayCheck(children)) {
 
         // Name instance
         anatomyInstance.name = 'anatomyInstance';
@@ -44,14 +45,15 @@ export function getAnatomy(component: ComponentSetNode, props: PropertiesResult 
         // Set result as an array
         result = { items: [], variant: anatomyInstance };
 
+
         result.items = children
         
-            .filter((c: ComponentNode) => c.name !== 'focus')
-            .map((c: ComponentNode, k: number) => ({
+            .filter((c: any) => c.name !== 'focus')
+            .map((c: any, k: number) => ({
 
                 name: c.name,
-                x: c.x - anatomyInstance!.x,
-                y: c.y - anatomyInstance!.y,
+                x: getRelativePosition(c).x,
+                y: getRelativePosition(c).y,
                 key: k + 1,
 
             }));
