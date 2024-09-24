@@ -2,7 +2,7 @@
 import { artefacts } from "../../data/arrays";
 import { PropertiesResult, PropertyResult } from "../../data/definitions";
 import { nodeStyles } from "../../data/styles";
-import { arrayCheck, cleanName, create, getAllChildren, getRelativePosition } from "../../helpers";
+import { arrayCheck, cleanName, create, getAllChildren, getRelativePosition, handleError, notifyAndClose } from "../../helpers";
 
 // Create accessibility artefacts & block
 function createAccessibilityBlock(props: any, block: FrameNode) {
@@ -111,39 +111,6 @@ function createContentBlock(props: any, block: FrameNode) {
 
 }
 
-// Create behaviour artefacts & block
-async function createBehaviourBlock(props: any, block: FrameNode) {
-
-    // Set up
-    let result = null;
-
-    try {
-        // Ensure propVariant exists and is of type InstanceNode
-        if (props.propVariant && props.propVariant.type === 'INSTANCE') {
-
-            // Get the main component of the instance
-            let behaviours = props.propVariant;
-                behaviours = await behaviours.getMainComponentAsync();
-
-            if (behaviours) {
-                console.log("Main component found:", behaviours);
-            } else {
-                console.log("No main component available for this instance.");
-            }
-
-        } else {
-            console.log("propVariant is not an instance.");
-        }
-
-    } catch (error) {
-        console.error("Error in createBehaviourBlock:", error);
-    }
-
-    return result;
-
-}
-
-
 // Create the block
 export function createBlock(title: string, instance: ComponentNode, props: PropertiesResult | null = null): FrameNode | null {
 
@@ -174,15 +141,6 @@ export function createBlock(title: string, instance: ComponentNode, props: Prope
         if (cBlocks && arrayCheck(cBlocks)) { cBlocks.forEach((c: any) => result.appendChild(c)) }
 
     }
-
-    if (title === 'Behaviour') {
-
-        const bBlocks = createBehaviourBlock(props, block);
-
-        // if (bBlocks && arrayCheck(bBlocks)) { bBlocks.forEach((b: any) => result.appendChild(b)) }
-
-    }
-    
 
     // Remove the original block template
     block.remove();
