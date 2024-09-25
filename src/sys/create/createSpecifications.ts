@@ -2,6 +2,7 @@
 import { PropertyResult } from "../../data/definitions";
 import { nodeStyles } from "../../data/styles";
 import { arrayCheck, capitaliseFirstLetter, clearNodeChildren, create, resizeElement } from "../../helpers";
+import { reComps } from "../get/getReusables";
 
 function setSizeForArtefact(artefact: any, type: string, value: string): [number, number] {
     return type === 'width' ? [artefact[value], artefact.height] : [artefact.width, artefact[value]];
@@ -46,7 +47,6 @@ function createOptionArtefacts(variant: PropertyResult, parent: any, artefact: I
 
 // Create size element for artefact
 function createSizeElement(
-    measure: ComponentSetNode, 
     artefact: any, 
     type: 'width' | 'height', 
     minmax: string
@@ -54,8 +54,13 @@ function createSizeElement(
 
     // Setup
     const result: FrameNode = create(`${minmax + type}`, nodeStyles.size, 'frame') as FrameNode;
-    const sizeElement: InstanceNode = measure.defaultVariant.createInstance();
     const value = minmax + capitaliseFirstLetter(type);
+
+    let sizeElement: any;
+        sizeElement = reComps.filter(a => a.name === 'doc.measure');
+        sizeElement = sizeElement[0].comp;
+        sizeElement = sizeElement.defaultVariant;
+        sizeElement = sizeElement.createInstance();
 
     // Define sizes
     const artefactSize: [number, number] = setSizeForArtefact(artefact, type, value);
@@ -84,7 +89,7 @@ function createSizeElement(
 }
 
 // Create size artefacts
-function createSizeArtefacts(parent: FrameNode, artefact: FrameNode, measure: ComponentSetNode): FrameNode[] {
+function createSizeArtefacts(parent: FrameNode, artefact: FrameNode): FrameNode[] {
 
     // Set up
     const sizeElements: FrameNode[] = [];
@@ -100,7 +105,7 @@ function createSizeArtefacts(parent: FrameNode, artefact: FrameNode, measure: Co
     // Check if artefact has size constraints and create size elements
     sizeProperties.forEach(({ prop, type, minmax }) => {
         if (artefact[prop]) {
-            sizeElements.push(createSizeElement(measure, artefact.clone(), type, minmax));
+            sizeElements.push(createSizeElement(artefact.clone(), type, minmax));
         }
     });
 
@@ -115,22 +120,27 @@ function createSizeArtefacts(parent: FrameNode, artefact: FrameNode, measure: Co
 }
 
 // Create instances
-export function createSpecifications(props: {
-    variant?: PropertyResult[];
-    propVariant: any;
-}, instance: any, measure: any): FrameNode {
+export function createSpecifications(props: { variant?: PropertyResult[]; propVariant: any; }): FrameNode {
 
     // Create and detach instance
-    const result: FrameNode = instance.createInstance().detachInstance();
+    let result: any;
+        result = reComps.filter(a => a.name === 'doc.comp-section');
+        result = result[0].comp;
+        result = result.createInstance();
+        result = result.detachInstance();
 
     // Find temporary block
-    const tempBlock: FrameNode | null = result.findChild(node => node.name === 'block') as FrameNode;
+    let block       = result.findChild((n: FrameNode) => n.name === 'block') as FrameNode;
+    let heading     = result.findChild((n: TextNode) => n.name === 'section-title') as TextNode;
 
     // Handle variants
     if (props.variant && props.variant.length > 0) {
+
+        heading.characters = 'Specifications';
+
         props.variant.forEach(variant => {
 
-            const propBlock: FrameNode = tempBlock?.clone() as FrameNode;
+            const propBlock: FrameNode = block?.clone() as FrameNode;
             const variantArtifactFrame: FrameNode | null = propBlock.findChild(node => node.name === 'diagram') as FrameNode;
             const propBlockTitle: TextNode | null = propBlock.findChild(node => node.name === 'section-subtitle') as TextNode;
 
@@ -149,15 +159,15 @@ export function createSpecifications(props: {
         });
 
         // Create size artefacts
-        const sizeBlock: FrameNode | null = result.findChild(node => node.name === 'block-size') as FrameNode;
-        const sizeArtefactFrame: FrameNode | null = tempBlock?.findChild(node => node.name === 'diagram')?.clone() as FrameNode;
+        const sizeBlock: FrameNode | null = result.findChild((node: FrameNode) => node.name === 'block-size') as FrameNode;
+        const sizeArtefactFrame: FrameNode | null = block?.findChild(node => node.name === 'diagram')?.clone() as FrameNode;
 
-        if (sizeArtefactFrame && arrayCheck(createSizeArtefacts(sizeArtefactFrame, props.propVariant, measure))) {
+        if (sizeArtefactFrame && arrayCheck(createSizeArtefacts(sizeArtefactFrame, props.propVariant))) {
             if (sizeBlock) {
                 sizeBlock.appendChild(sizeArtefactFrame);
                 sizeArtefactFrame.name = 'diagram: width-and-height';
             } else {
-                const wAndHBlock: FrameNode = tempBlock?.clone() as FrameNode;
+                const wAndHBlock: FrameNode = block?.clone() as FrameNode;
                 const wAndHTitle: TextNode | null = wAndHBlock.findChild(node => node.name === 'section-subtitle') as TextNode;
                 const wAndHDiagram: FrameNode | null = wAndHBlock.findChild(node => node.name === 'diagram') as FrameNode;
 
@@ -175,7 +185,7 @@ export function createSpecifications(props: {
     }
 
     // Clean up
-    tempBlock?.remove();
+    block?.remove();
 
     return result;
 }

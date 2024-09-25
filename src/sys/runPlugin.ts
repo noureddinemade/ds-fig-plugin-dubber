@@ -19,25 +19,6 @@ export async function runPlugin(selection: SceneNode[]) {
         } 
     
     }
-    
-    // Get reusable components
-    const reusableComps: SceneNode[] = [];
-
-    if (arrayCheck(figmaComponents)) { 
-        
-        for (const c of figmaComponents) {
-
-            try {
-
-                const node = c.set ? await figma.importComponentSetByKeyAsync(c.key) : await figma.importComponentByKeyAsync(c.key);
-
-                if (node) { reusableComps.push(node as SceneNode) }
-            
-            } catch (error) { handleError('Could not get reusable components', error) }
-        
-        } 
-        
-    }
 
     // Get components and their properties from selection
     const toDocument: any = await getAll(selection);
@@ -45,7 +26,7 @@ export async function runPlugin(selection: SceneNode[]) {
     // Get components and their properties from selection and then check if anything was found to document
     arrayCheck(toDocument)
 
-        ? await createAll(toDocument, reusableComps)
+        ? await createAll(toDocument)
         : notifyAndClose('Nothing found so nothing gets documented!');
 
 }

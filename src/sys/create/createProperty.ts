@@ -1,7 +1,14 @@
-import { arrayCheck } from "../../helpers";
+import { nodeStyles } from "../../data/styles";
+import { arrayCheck, create } from "../../helpers";
 
 // Create property item
 function createProp(prop: any, original: any, parent: any) {
+
+    // Set up
+    const propFrame = create(prop.name, nodeStyles.prop, 'frame');
+
+    // Customise
+    propFrame.name = prop.name;
 
     // Clone original
     let newProp: any = original.clone();
@@ -10,10 +17,14 @@ function createProp(prop: any, original: any, parent: any) {
     newProp.setProperties({ 'label#8808:0' : prop.name });
 
     // Append to parent
-    parent.appendChild(newProp);
+    propFrame.appendChild(newProp);
+    parent.appendChild(propFrame);
 
     // Check if there are any values
     if (arrayCheck(prop.options)) {
+
+        parent.layoutMode               = 'VERTICAL';
+        parent.layoutSizingVertical     = 'HUG';
 
         // Loop thru options
         prop.options.forEach((o: any) => {
@@ -30,7 +41,7 @@ function createProp(prop: any, original: any, parent: any) {
             });
 
             // Append to parent
-            parent.appendChild(newOption);
+            propFrame.appendChild(newOption);
 
         })
 
@@ -39,7 +50,7 @@ function createProp(prop: any, original: any, parent: any) {
 }
 
 // Create individual properties
-function createIndividualProps(props: any, parent: any, type: string) {
+function createIndividualProps(props: any, parent: any) {
 
     // Setup
     let parentFrame:    any = parent.children[1];
@@ -63,9 +74,9 @@ export function createAllProps(props: any, parent: any) {
     let bFrame: any = pFrame.findChild((n: any) => n.name === 'property-b');
     let iFrame: any = pFrame.findChild((n: any) => n.name === 'property-i');
 
-    arrayCheck(props.variant)   ? createIndividualProps(props.variant, vFrame, 'v')     : vFrame.remove();
-    arrayCheck(props.text)      ? createIndividualProps(props.text, tFrame, 't')        : tFrame.remove();
-    arrayCheck(props.boolean)   ? createIndividualProps(props.boolean, bFrame, 'b')     : bFrame.remove();
-    arrayCheck(props.instance)  ? createIndividualProps(props.instance, iFrame, 'i')    : iFrame.remove();
+    arrayCheck(props.variant)   ? createIndividualProps(props.variant, vFrame)     : vFrame.remove();
+    arrayCheck(props.text)      ? createIndividualProps(props.text, tFrame)        : tFrame.remove();
+    arrayCheck(props.boolean)   ? createIndividualProps(props.boolean, bFrame)     : bFrame.remove();
+    arrayCheck(props.instance)  ? createIndividualProps(props.instance, iFrame)    : iFrame.remove();
 
 }

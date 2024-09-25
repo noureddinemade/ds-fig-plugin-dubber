@@ -1,12 +1,16 @@
 // Import
 import { arrayCheck } from "../../helpers";
+import { reComps } from "../get/getReusables";
 import { createAllProps } from "./createProperty";
 
 // Create instances
-export function createDescription(description: string | null, props: any, instance: any) {
+export function createDescription(description: string | null, props: any) {
 
     // Set up
-    let result: any = instance.createInstance();
+    let result: any;
+        result = reComps.filter(a => a.name === 'doc.comp-desc');
+        result = result[0].comp;
+        result = result.createInstance();
 
     // Adjust properties
     if (description) { result.setProperties({ 'comp-desc#8725:16' : description }) };

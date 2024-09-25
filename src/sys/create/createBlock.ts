@@ -3,6 +3,7 @@ import { artefacts } from "../../data/arrays";
 import { PropertiesResult, PropertyResult } from "../../data/definitions";
 import { nodeStyles } from "../../data/styles";
 import { arrayCheck, cleanName, create, getAllChildren, getRelativePosition, handleError, notifyAndClose } from "../../helpers";
+import { reComps } from "../get/getReusables";
 
 // Create accessibility artefacts & block
 function createAccessibilityBlock(props: any, block: FrameNode) {
@@ -112,12 +113,17 @@ function createContentBlock(props: any, block: FrameNode) {
 }
 
 // Create the block
-export function createBlock(title: string, instance: ComponentNode, props: PropertiesResult | null = null): FrameNode | null {
+export function createBlock(title: string, props: PropertiesResult | null = null): FrameNode | null {
 
     // Create and detach the instance
-    let result      = instance.createInstance().detachInstance();
-    let block       = result.findChild((n) => n.name === 'block') as FrameNode | null;
-    let heading     = result.findChild((n) => n.name === 'section-title') as TextNode | null;
+    let result: any;
+        result = reComps.filter(a => a.name === 'doc.comp-section');
+        result = result[0].comp;
+        result = result.createInstance();
+        result = result.detachInstance();
+        
+    let block       = result.findChild((n: FrameNode) => n.name === 'block') as FrameNode | null;
+    let heading     = result.findChild((n: FrameNode) => n.name === 'section-title') as TextNode | null;
 
     // Error handling if block or heading is not found
     if (!block || !heading) { throw new Error('Could not find block or section-title') }

@@ -1,11 +1,15 @@
 import { AnatomyResult } from "../../data/definitions";
+import { reComps } from "../get/getReusables";
 
 // Create instances
-export function createAnatomy(anatomy: AnatomyResult, instance: ComponentNode) {
+export function createAnatomy(anatomy: AnatomyResult) {
 
     // Set up
-    let result:             InstanceNode | FrameNode    = instance.createInstance();
-        result                                          = result.detachInstance();
+    let result: any;
+        result = reComps.filter(a => a.name === 'doc.comp-anatomy');
+        result = result[0].comp;
+        result = result.createInstance();
+        result = result.detachInstance();
 
     let diagramFrame:       any = result.findChild((n: any) => n.name === 'diagram');
     let diagramMarkers:     any = diagramFrame.findChild((n: any) => n.name === 'annotations');
