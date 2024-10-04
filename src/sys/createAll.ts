@@ -17,6 +17,8 @@ export async function createAll( components: DocComponent[]): Promise<void> {
 
         components.forEach(async (c: DocComponent) => {
 
+            console.log(c);
+
             // Create document frame for the component
             const compFrame: FrameNode | null = create(`component: ${c.info.name}`, nodeStyles.frame, 'frame') as FrameNode;
 

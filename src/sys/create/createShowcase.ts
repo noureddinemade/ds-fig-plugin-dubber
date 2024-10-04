@@ -16,8 +16,6 @@ export function createShowcase(props: PropertiesResult) {
     let diagram     = block ? block.findChild((n: TextNode) => n.name === 'diagram') as FrameNode | null : null;
     let instance    = props.propVariant.clone();
 
-    console.log(instance);
-
     // Cusomise and fill
     instance.name = 'core-component'
 

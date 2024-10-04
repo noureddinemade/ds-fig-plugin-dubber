@@ -1,18 +1,19 @@
 // Import
-import { DocComponent } from "../data/definitions";
 import { handleError } from "../helpers";
 import { getAnatomy } from "./get/getAnatomy";
+import { getDependencies } from "./get/getDependencies";
 import { getInformation } from "./get/getInformation";
 import { getProperties } from "./get/getProperties";
 
 // Set component to return
-function setComp(component: any) {
+async function setComp(component: any) {
 
     return {
 
-        info:       getInformation(component),
-        props:      getProperties(component),
-        anatomy:    getAnatomy(component, getProperties(component))
+        info:           getInformation(component),
+        props:          getProperties(component),
+        anatomy:        getAnatomy(component, getProperties(component)),
+        dependencies:   await getDependencies(getProperties(component))
 
     }
 
